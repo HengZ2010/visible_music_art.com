@@ -17,10 +17,7 @@
     --indigo: #6B8CAE;
     --mist: #E8E6DF;
     --ash: #9A9790;
-    --canvas-bg: #0D0D0F;
   }
-
-  html { font-size: 16px; }
 
   body {
     font-family: 'Inter', sans-serif;
@@ -44,7 +41,6 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--mist);
   }
-
   .nav-logo {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.35rem;
@@ -53,12 +49,15 @@
     color: var(--sumi);
     text-decoration: none;
   }
-
-  .nav-logo span {
-    font-style: italic;
-    color: var(--moss);
+  .nav-logo span { font-style: italic; color: var(--moss); }
+  .nav-logo small {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    font-style: normal;
+    color: var(--ash);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
   }
-
   .nav-hint {
     font-size: 0.7rem;
     letter-spacing: 0.2em;
@@ -74,12 +73,10 @@
     display: flex;
     flex-direction: column;
   }
-
   .hero-text {
     padding: 5rem 3rem 2.5rem;
     max-width: 580px;
   }
-
   .eyebrow {
     font-size: 0.65rem;
     letter-spacing: 0.3em;
@@ -88,22 +85,15 @@
     font-weight: 500;
     margin-bottom: 1.25rem;
   }
-
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.4rem, 5vw, 3.6rem);
     font-weight: 300;
     line-height: 1.15;
-    letter-spacing: -0.01em;
     color: var(--sumi);
     margin-bottom: 1.25rem;
   }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--indigo);
-  }
-
+  .hero-title em { font-style: italic; color: var(--indigo); }
   .hero-sub {
     font-size: 0.875rem;
     line-height: 1.75;
@@ -112,61 +102,47 @@
     max-width: 400px;
   }
 
-  /* STUDIO AREA */
+  /* STUDIO */
   .studio {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 0 3rem 4rem;
-    gap: 2rem;
+    gap: 1rem;
   }
 
-  /* CONTROLS ROW */
+  /* CONTROLS */
   .controls-row {
     display: flex;
     align-items: center;
-    gap: 0;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.6rem;
   }
-
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1.1rem;
+    gap: 0.45rem;
+    padding: 0.52rem 1rem;
     font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 400;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     border: 1px solid var(--mist);
     background: var(--washi);
     color: var(--sumi);
     cursor: pointer;
-    transition: all 0.18s ease;
+    transition: all 0.15s ease;
     outline: none;
-    position: relative;
+    white-space: nowrap;
   }
-
   .btn:hover { background: var(--mist); border-color: var(--ash); }
+  .btn.active { background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
+  .btn.primary { background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
+  .btn.primary:hover { opacity: 0.8; background: var(--sumi); }
+  .btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-  .btn.active {
-    background: var(--sumi);
-    color: var(--washi);
-    border-color: var(--sumi);
-  }
-
-  .btn.primary {
-    background: var(--sumi);
-    color: var(--washi);
-    border-color: var(--sumi);
-  }
-
-  .btn.primary:hover { opacity: 0.8; }
-
-  .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
-
-  .divider { width: 1px; height: 28px; background: var(--mist); margin: 0 0.25rem; }
+  .divider { width: 1px; height: 26px; background: var(--mist); margin: 0 0.15rem; flex-shrink: 0; }
 
   .style-group {
     display: flex;
@@ -174,52 +150,64 @@
     gap: 0.5rem;
     margin-left: auto;
   }
-
   .style-label {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ash);
   }
-
-  .style-pills {
-    display: flex;
-    gap: 2px;
-  }
-
+  .style-pills { display: flex; gap: 2px; }
   .style-pill {
-    padding: 0.4rem 0.8rem;
+    padding: 0.38rem 0.75rem;
     font-size: 0.7rem;
     letter-spacing: 0.06em;
     border: 1px solid var(--mist);
     background: transparent;
     color: var(--ash);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.14s;
     font-family: 'Inter', sans-serif;
   }
-
   .style-pill:hover { color: var(--sumi); border-color: var(--ash); }
   .style-pill.active { background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
 
-  /* CANVAS AREA */
-  .canvas-container {
+  /* PROGRESS */
+  .progress-bar {
+    height: 1px;
+    background: var(--mist);
     position: relative;
-    background: var(--canvas-bg);
     overflow: hidden;
-    flex: 1;
-    min-height: 420px;
+    cursor: pointer;
+  }
+  .progress-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--indigo), var(--moss));
+    transition: width 0.15s linear;
+    pointer-events: none;
   }
 
-  canvas {
+  /* CANVAS */
+  .canvas-container {
+    position: relative;
+    background: #0B0B0E;
+    overflow: hidden;
+    flex: 1;
+    min-height: 440px;
+  }
+  #artCanvas {
     display: block;
     width: 100%;
     height: 100%;
     position: absolute;
     top: 0; left: 0;
+    z-index: 0;
   }
+  /* glowCanvas injected by JS with z-index:1, pointer-events:none */
 
-  /* Upload overlay */
+  /* Upload overlay — z-index 20 so it's always on top */
   .upload-overlay {
     position: absolute;
     inset: 0;
@@ -229,15 +217,12 @@
     justify-content: center;
     gap: 1.5rem;
     cursor: pointer;
-    transition: opacity 0.3s;
-    z-index: 10;
+    z-index: 20;
+    transition: opacity 0.25s;
   }
-
   .upload-overlay.hidden { opacity: 0; pointer-events: none; }
-
   .upload-circle {
-    width: 72px;
-    height: 72px;
+    width: 68px; height: 68px;
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 50%;
     display: flex;
@@ -245,23 +230,19 @@
     justify-content: center;
     transition: border-color 0.2s;
   }
-
-  .upload-overlay:hover .upload-circle { border-color: rgba(255,255,255,0.35); }
-
+  .upload-overlay:hover .upload-circle { border-color: rgba(255,255,255,0.4); }
   .upload-circle svg { width: 22px; height: 22px; stroke: rgba(255,255,255,0.5); }
-
   .upload-text {
     text-align: center;
-    color: rgba(255,255,255,0.35);
-    font-size: 0.78rem;
+    color: rgba(255,255,255,0.32);
+    font-size: 0.76rem;
     letter-spacing: 0.12em;
     font-weight: 300;
-    line-height: 1.8;
+    line-height: 1.9;
   }
-
   .upload-text strong { color: rgba(255,255,255,0.55); font-weight: 400; }
 
-  /* Emotion label on canvas */
+  /* Canvas overlays */
   .canvas-label {
     position: absolute;
     bottom: 1.5rem;
@@ -271,41 +252,20 @@
     opacity: 0;
     transition: opacity 0.6s;
   }
-
   .canvas-label.visible { opacity: 1; }
-
   .emotion-word {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-style: italic;
     font-weight: 300;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.4);
     letter-spacing: 0.08em;
-    line-height: 1.4;
   }
-
   .canvas-time {
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.2);
-    margin-top: 0.25rem;
-  }
-
-  /* Progress */
-  .progress-bar {
-    height: 1px;
-    background: var(--mist);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    position: absolute;
-    top: 0; left: 0;
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--indigo), var(--moss));
-    transition: width 0.15s linear;
+    color: rgba(255,255,255,0.18);
+    margin-top: 0.2rem;
   }
 
   /* STATUS */
@@ -313,38 +273,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
-
   .status-text {
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
     color: var(--ash);
     font-weight: 300;
   }
-
-  .legend {
-    display: flex;
-    gap: 1.25rem;
-    align-items: center;
-  }
-
+  .legend { display: flex; gap: 1.2rem; align-items: center; }
   .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--ash);
+    display: flex; align-items: center; gap: 0.35rem;
+    font-size: 0.63rem; letter-spacing: 0.09em; color: var(--ash);
   }
+  .legend-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-  .legend-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  /* PHILOSOPHY SECTION */
+  /* PHILOSOPHY */
   .philosophy {
     padding: 5rem 3rem;
     border-top: 1px solid var(--mist);
@@ -352,75 +297,40 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 4rem;
   }
-
-  .phil-item {}
-
   .phil-num {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--mist);
-    line-height: 1;
-    margin-bottom: 1rem;
+    font-size: 2rem; font-weight: 300; font-style: italic;
+    color: var(--mist); line-height: 1; margin-bottom: 1rem;
   }
-
   .phil-title {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--sumi);
-    font-weight: 500;
-    margin-bottom: 0.75rem;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--sumi); font-weight: 500; margin-bottom: 0.75rem;
   }
-
-  .phil-body {
-    font-size: 0.82rem;
-    line-height: 1.8;
-    color: var(--ash);
-    font-weight: 300;
-  }
+  .phil-body { font-size: 0.82rem; line-height: 1.8; color: var(--ash); font-weight: 300; }
 
   /* FOOTER */
   footer {
     padding: 2rem 3rem;
     border-top: 1px solid var(--mist);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
   }
-
   .footer-logo {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.9rem;
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    color: var(--ash);
+    font-size: 0.9rem; font-weight: 300; letter-spacing: 0.2em; color: var(--ash);
   }
+  .footer-note { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--mist); }
 
-  .footer-note {
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    color: var(--mist);
-  }
-
-  /* Responsive */
   @media (max-width: 768px) {
     nav, .hero-text, .studio, .philosophy, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
     .philosophy { grid-template-columns: 1fr; gap: 2.5rem; }
     .style-group { margin-left: 0; }
-    .controls-row { gap: 0.5rem; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; animation: none !important; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="#" class="nav-logo">音響 <span>Onkyo</span> <em style="font-size:0.7rem; letter-spacing:0.18em; font-style:normal; color:var(--ash); font-family:'Inter',sans-serif; font-weight:300;">by HENG</em></a>
+  <a href="#" class="nav-logo">音響 <span>Onkyo</span> <small>by HENG</small></a>
   <span class="nav-hint">Music → Emotion → Art</span>
 </nav>
 
@@ -433,102 +343,129 @@
     </div>
 
     <div class="studio">
-      <!-- Controls -->
-      <div class="controls-row">
-        <button class="btn" id="mic-btn" onclick="toggleMic()" title="Use microphone">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-          Microphone
-        </button>
 
-        <button class="btn" id="file-btn" onclick="document.getElementById('file-input').click()" title="Import audio file">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <!-- Controls Row -->
+      <div class="controls-row">
+
+        <!-- Import Audio -->
+        <button class="btn" id="file-btn" onclick="triggerFileInput()" title="Import audio file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+          </svg>
           Import Audio
         </button>
-        <input type="file" id="file-input" accept="audio/*" style="display:none" onchange="loadAudioFile(event)">
+        <input type="file" id="file-input" accept="audio/*" style="display:none">
 
-        <button class="btn" id="play-btn" onclick="togglePlay()" style="display:none">
-          <svg id="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
+        <!-- Play / Pause -->
+        <button class="btn" id="play-btn" onclick="togglePlay()" disabled title="Play / Pause">
+          <svg id="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="5,3 19,12 5,21"/>
+          </svg>
           <span id="play-label">Play</span>
+        </button>
+
+        <!-- Microphone -->
+        <button class="btn" id="mic-btn" onclick="toggleMic()" title="Use microphone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+          </svg>
+          Microphone
         </button>
 
         <div class="divider"></div>
 
+        <!-- Clear -->
         <button class="btn" onclick="clearCanvas()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+          </svg>
           Clear
         </button>
 
+        <!-- Save -->
         <button class="btn primary" onclick="saveCanvas()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7,10 12,15 17,10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
           Save as PNG
         </button>
 
+        <!-- Style pills -->
         <div class="style-group">
           <span class="style-label">Mood</span>
           <div class="style-pills">
-            <button class="style-pill active" data-style="ink" onclick="setStyle(this)">Ink</button>
-            <button class="style-pill" data-style="bloom" onclick="setStyle(this)">Bloom</button>
-            <button class="style-pill" data-style="tide" onclick="setStyle(this)">Tide</button>
-            <button class="style-pill" data-style="ember" onclick="setStyle(this)">Ember</button>
+            <button class="style-pill active" data-style="ink"   onclick="setStyle(this)">Ink</button>
+            <button class="style-pill"        data-style="bloom" onclick="setStyle(this)">Bloom</button>
+            <button class="style-pill"        data-style="tide"  onclick="setStyle(this)">Tide</button>
+            <button class="style-pill"        data-style="ember" onclick="setStyle(this)">Ember</button>
           </div>
         </div>
       </div>
 
-      <!-- Progress -->
-      <div class="progress-bar">
+      <!-- Progress bar (clickable to seek) -->
+      <div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
 
-      <!-- Canvas -->
+      <!-- Canvas area -->
       <div class="canvas-container" id="canvas-container">
         <canvas id="artCanvas"></canvas>
 
-        <div class="upload-overlay" id="upload-overlay" onclick="document.getElementById('file-input').click()">
+        <!-- Upload prompt (hidden after first load) -->
+        <div class="upload-overlay" id="upload-overlay" onclick="triggerFileInput()">
           <div class="upload-circle">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke="rgba(255,255,255,0.55)">
+              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
           </div>
           <div class="upload-text">
             <strong>Import a music file</strong><br>
             or click Microphone to paint in real time<br>
-            mp3 · wav · ogg · flac · aac
+            mp3 &nbsp;·&nbsp; wav &nbsp;·&nbsp; ogg &nbsp;·&nbsp; flac &nbsp;·&nbsp; aac
           </div>
         </div>
 
+        <!-- Emotion / time overlay -->
         <div class="canvas-label" id="canvas-label">
           <div class="emotion-word" id="emotion-word">—</div>
-          <div class="canvas-time" id="canvas-time">0:00</div>
+          <div class="canvas-time"  id="canvas-time">0:00</div>
         </div>
       </div>
 
-      <!-- Status -->
+      <!-- Status row -->
       <div class="status-row">
         <span class="status-text" id="status-text">Ready — import audio or use microphone</span>
         <div class="legend">
           <div class="legend-item"><div class="legend-dot" style="background:#6B8CAE"></div>Bass</div>
           <div class="legend-item"><div class="legend-dot" style="background:#8B9D77"></div>Mid</div>
           <div class="legend-item"><div class="legend-dot" style="background:#C9A96E"></div>High</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#B08090"></div>Air</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#C08090"></div>Air</div>
         </div>
       </div>
-    </div>
-  </div>
+
+    </div><!-- /studio -->
+  </div><!-- /hero -->
 
   <!-- Philosophy -->
   <section class="philosophy">
-    <div class="phil-item">
+    <div>
       <div class="phil-num">一</div>
       <div class="phil-title">Pitch → Color</div>
-      <p class="phil-body">Each frequency range maps to a distinct tone. Deep bass becomes indigo and dark blue — grounding, heavy. Mid-range blooms into moss and ochre. High harmonics catch gold and rose, like light at the edge of a reed.</p>
+      <p class="phil-body">Every frequency maps to its own hue across the full colour wheel — deep bass becomes violet and indigo, midrange blooms into green and gold, high harmonics catch amber and rose.</p>
     </div>
-    <div class="phil-item">
+    <div>
       <div class="phil-num">二</div>
       <div class="phil-title">Volume → Form</div>
-      <p class="phil-body">Louder passages leave larger, more opaque marks. Quiet moments produce fine traces — the silence between brushstrokes. The resulting painting holds the full dynamic range of the song as texture and density.</p>
+      <p class="phil-body">Louder passages leave larger, more opaque marks. Quiet moments produce fine traces. The painting holds the full dynamic range of the song as texture and density.</p>
     </div>
-    <div class="phil-item">
+    <div>
       <div class="phil-num">三</div>
-      <div class="phil-title">Rhythm → Structure</div>
-      <p class="phil-body">Percussion and beat transients trigger bursts that scatter across the canvas. Fast rhythms fill the space densely; slow passages breathe. Over time, the painting accumulates the music's complete emotional arc.</p>
+      <div class="phil-title">Time → Space</div>
+      <p class="phil-body">The canvas reads left to right as a timeline. The beginning of a song paints the left edge; the end reaches the right. Every moment is permanently recorded in its place.</p>
     </div>
   </section>
 </main>
@@ -539,513 +476,546 @@
 </footer>
 
 <script>
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let audioCtx, analyser, source, micStream, audioElement;
-let animId, isRunning = false, isMicMode = false;
-let frameCount = 0, prevEnergy = 0, lastBeatTime = 0;
+// ═══════════════════════════════════════════════════════════
+//  ONKYO  —  Rendering Engine v4
+//  · Full-spectrum per-frequency colour (HSL wheel)
+//  · Permanent dual-canvas (paint never erased during play)
+//  · Timeline X-axis (left = start, right = end)
+//  · Robust audio pipeline (fresh AudioContext per file)
+// ═══════════════════════════════════════════════════════════
+
+// ── State ──────────────────────────────────────────────────
+let audioCtx  = null;
+let analyser  = null;
+let source    = null;
+let micStream = null;
+let audioEl   = null;          // current HTMLAudioElement
+
+let animId      = null;
+let isRunning   = false;
+let isMicMode   = false;
+let frameCount  = 0;
+let prevEnergy  = 0;
+let lastBeatT   = 0;
+let hueWander   = 0;
+let timelineCursor = 0;        // 0–1, left→right across canvas
+let micStartTime   = 0;
+const MIC_SPAN     = 300;      // seconds treated as full mic canvas
+
 let currentStyle = 'ink';
 let emotionHistory = [];
-const EMOTIONS = {
-  low_calm:    ['stillness', 'reverie', 'solitude', 'quietude', 'dusk'],
-  low_tense:   ['melancholy', 'yearning', 'longing', 'sorrow', 'gravity'],
-  high_calm:   ['serenity', 'clarity', 'morning', 'release', 'breath'],
-  high_tense:  ['elation', 'urgency', 'rapture', 'fervour', 'rise'],
-};
 let currentEmotion = '';
-let emotionTimer = null;
 
-// ─── CANVAS SETUP ─────────────────────────────────────────────────────────────
-const canvas = document.getElementById('artCanvas');
-const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-  const container = document.getElementById('canvas-container');
-  const rect = container.getBoundingClientRect();
-  canvas.width = rect.width * window.devicePixelRatio;
-  canvas.height = rect.height * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  paintBackground();
-}
-
-function paintBackground() {
-  const w = canvas.width / window.devicePixelRatio;
-  const h = canvas.height / window.devicePixelRatio;
-  ctx.fillStyle = '#0D0D0F';
-  ctx.fillRect(0, 0, w, h);
-  // Subtle vignette via radial gradient
-  const grad = ctx.createRadialGradient(w/2, h/2, h*0.1, w/2, h/2, h*0.85);
-  grad.addColorStop(0, 'rgba(0,0,0,0)');
-  grad.addColorStop(1, 'rgba(0,0,0,0.45)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
-}
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-// ─── STYLE PALETTES ───────────────────────────────────────────────────────────
-const STYLES = {
-  ink: {
-    // Sumi-e: monochrome with deep blue-black, occasional warm grey
-    getColor(normFreq, vol, isBeat) {
-      const v = vol / 255;
-      if (normFreq < 0.12) {
-        // Bass: near-black with blue tint
-        return `rgba(${20+v*30},${22+v*35},${35+v*55},${0.12+v*0.72})`;
-      } else if (normFreq < 0.35) {
-        // Low-mid: dark grey
-        return `rgba(${30+v*60},${30+v*55},${35+v*50},${0.10+v*0.65})`;
-      } else if (normFreq < 0.65) {
-        // Mid: softer grey
-        return `rgba(${60+v*90},${58+v*85},${60+v*80},${0.08+v*0.55})`;
-      } else {
-        // High: near white
-        return `rgba(${180+v*70},${175+v*72},${160+v*70},${0.06+v*0.4})`;
-      }
-    },
-    getShape(normFreq) {
-      if (normFreq < 0.15) return 'splat';
-      if (normFreq < 0.5) return 'stroke';
-      return 'drip';
-    },
-    bg: '#0D0D0F',
-    fade: 'rgba(13,13,15,0.008)',
-  },
-  bloom: {
-    // Sakura / spring: pinks, dusty lavender, soft greens
-    getColor(normFreq, vol) {
-      const v = vol / 255;
-      if (normFreq < 0.12) return `rgba(${80+v*40},${60+v*30},${110+v*60},${0.10+v*0.65})`;
-      if (normFreq < 0.35) return `rgba(${170+v*55},${90+v*60},${120+v*50},${0.10+v*0.65})`;
-      if (normFreq < 0.65) return `rgba(${200+v*45},${150+v*60},${155+v*50},${0.10+v*0.60})`;
-      return `rgba(${220+v*30},${190+v*55},${180+v*60},${0.08+v*0.50})`;
-    },
-    getShape(normFreq) {
-      if (normFreq < 0.15) return 'petal';
-      if (normFreq < 0.5) return 'arc';
-      return 'scatter';
-    },
-    bg: '#0C0A10',
-    fade: 'rgba(12,10,16,0.009)',
-  },
-  tide: {
-    // Ocean: deep navy, teal, sea-green, foam white
-    getColor(normFreq, vol) {
-      const v = vol / 255;
-      if (normFreq < 0.12) return `rgba(${10+v*25},${30+v*55},${80+v*90},${0.12+v*0.70})`;
-      if (normFreq < 0.35) return `rgba(${15+v*40},${80+v*80},${110+v*80},${0.10+v*0.65})`;
-      if (normFreq < 0.65) return `rgba(${30+v*60},${130+v*80},${120+v*70},${0.09+v*0.58})`;
-      return `rgba(${150+v*80},${210+v*40},${200+v*50},${0.07+v*0.45})`;
-    },
-    getShape(normFreq) {
-      if (normFreq < 0.15) return 'wave';
-      if (normFreq < 0.5) return 'ripple';
-      return 'foam';
-    },
-    bg: '#060A0F',
-    fade: 'rgba(6,10,15,0.008)',
-  },
-  ember: {
-    // Fire / autumn: deep red, amber, gold, orange
-    getColor(normFreq, vol) {
-      const v = vol / 255;
-      if (normFreq < 0.12) return `rgba(${60+v*50},${8+v*20},${5+v*10},${0.12+v*0.72})`;
-      if (normFreq < 0.35) return `rgba(${150+v*80},${40+v*50},${10+v*15},${0.10+v*0.68})`;
-      if (normFreq < 0.65) return `rgba(${200+v*50},${110+v*80},${20+v*30},${0.09+v*0.62})`;
-      return `rgba(${230+v*20},${190+v*55},${80+v*120},${0.08+v*0.50})`;
-    },
-    getShape(normFreq) {
-      if (normFreq < 0.15) return 'splat';
-      if (normFreq < 0.5) return 'flare';
-      return 'spark';
-    },
-    bg: '#0F0805',
-    fade: 'rgba(15,8,5,0.009)',
-  },
+const EMOTIONS = {
+  low_calm:   ['stillness','reverie','solitude','quietude','dusk'],
+  low_tense:  ['melancholy','yearning','longing','sorrow','gravity'],
+  high_calm:  ['serenity','clarity','morning','release','breath'],
+  high_tense: ['elation','urgency','rapture','fervour','rise'],
 };
 
-// ─── DRAWING ──────────────────────────────────────────────────────────────────
-function drawShape(x, y, size, color, shape, angle) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(angle);
-  ctx.fillStyle = color;
-  ctx.strokeStyle = color;
+// ── Canvas setup ───────────────────────────────────────────
+const paintCanvas = document.getElementById('artCanvas');
+const pCtx = paintCanvas.getContext('2d');
 
-  switch(shape) {
-    case 'splat': {
-      // Organic ink splat
-      ctx.beginPath();
-      const pts = 5 + Math.floor(Math.random()*4);
-      for (let i = 0; i < pts; i++) {
-        const a = (i/pts)*Math.PI*2;
-        const r = size * (0.6 + Math.random()*0.8);
-        i===0 ? ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r) : ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
-      }
-      ctx.closePath();
-      ctx.fill();
-      break;
-    }
-    case 'stroke': {
-      // Brushstroke — elongated ellipse
-      ctx.beginPath();
-      ctx.ellipse(0, 0, size*2.5, size*0.35, 0, 0, Math.PI*2);
-      ctx.fill();
-      break;
-    }
-    case 'drip': {
-      // Fine ink drip
-      ctx.beginPath();
-      ctx.ellipse(0, 0, size*0.35, size*1.5, 0, 0, Math.PI*2);
-      ctx.fill();
-      break;
-    }
-    case 'petal': {
-      ctx.beginPath();
-      ctx.ellipse(0, -size*0.5, size*0.55, size*1.1, 0, 0, Math.PI*2);
-      ctx.fill();
-      break;
-    }
-    case 'arc': {
-      ctx.lineWidth = size * 0.4;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      const sweep = (Math.random()*0.6+0.3)*Math.PI;
-      ctx.arc(0, 0, size*1.2, -sweep/2, sweep/2);
-      ctx.stroke();
-      break;
-    }
-    case 'scatter': {
-      for (let i=0; i<4; i++) {
-        const ox = (Math.random()-0.5)*size*3;
-        const oy = (Math.random()-0.5)*size*3;
-        ctx.beginPath();
-        ctx.arc(ox, oy, size*0.3, 0, Math.PI*2);
-        ctx.fill();
-      }
-      break;
-    }
-    case 'wave': {
-      ctx.lineWidth = size * 0.3;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(-size*2, 0);
-      ctx.quadraticCurveTo(-size, -size*0.8, 0, 0);
-      ctx.quadraticCurveTo(size, size*0.8, size*2, 0);
-      ctx.stroke();
-      break;
-    }
-    case 'ripple': {
-      ctx.lineWidth = 0.5;
-      for (let r=0; r<3; r++) {
-        ctx.globalAlpha = 0.6 - r*0.18;
-        ctx.beginPath();
-        ctx.arc(0, 0, size*(0.5+r*0.6), 0, Math.PI*2);
-        ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-      break;
-    }
-    case 'foam': {
-      ctx.beginPath();
-      ctx.arc(0, 0, size*0.4, 0, Math.PI*2);
-      ctx.fill();
-      break;
-    }
-    case 'flare': {
-      ctx.beginPath();
-      ctx.moveTo(0, -size*2.5);
-      ctx.lineTo(size*0.35, size*0.5);
-      ctx.lineTo(-size*0.35, size*0.5);
-      ctx.closePath();
-      ctx.fill();
-      break;
-    }
-    case 'spark': {
-      ctx.lineWidth = 0.8;
-      ctx.lineCap = 'round';
-      const n = 3 + Math.floor(Math.random()*3);
-      for (let i=0;i<n;i++){
-        const a = Math.random()*Math.PI*2;
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.lineTo(Math.cos(a)*size*2, Math.sin(a)*size*2);
-        ctx.stroke();
-      }
-      break;
-    }
-    default: {
-      ctx.beginPath();
-      ctx.arc(0, 0, size, 0, Math.PI*2);
-      ctx.fill();
-    }
+// Glow overlay — ephemeral, cleared each frame
+const glowCanvas = document.createElement('canvas');
+glowCanvas.style.cssText =
+  'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+document.getElementById('canvas-container').appendChild(glowCanvas);
+const gCtx = glowCanvas.getContext('2d');
+
+let W = 0, H = 0;
+
+function resizeCanvases() {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = document.getElementById('canvas-container').getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
+  for (const c of [paintCanvas, glowCanvas]) {
+    c.width  = Math.round(W * dpr);
+    c.height = Math.round(H * dpr);
+    c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
   }
-  ctx.restore();
+  paintBg();
+}
+window.addEventListener('resize', resizeCanvases);
+
+// ── Style definitions ──────────────────────────────────────
+const STYLES = {
+  ink:   { bg:'#0B0B0E', hueShift:220, sat:0.55, inkMode:true  },
+  bloom: { bg:'#0A080D', hueShift:300, sat:1.00, inkMode:false },
+  tide:  { bg:'#050A10', hueShift:195, sat:0.90, inkMode:false },
+  ember: { bg:'#0E0600', hueShift:0,   sat:1.00, inkMode:false },
+};
+
+function paintBg() {
+  const def = STYLES[currentStyle];
+  pCtx.fillStyle = def.bg;
+  pCtx.fillRect(0, 0, W, H);
+  // Left-to-right horizontal tint (darkness fades as timeline progresses)
+  const hg = pCtx.createLinearGradient(0, 0, W, 0);
+  hg.addColorStop(0, 'rgba(0,0,0,0.22)');
+  hg.addColorStop(1, 'rgba(0,0,0,0.00)');
+  pCtx.fillStyle = hg;
+  pCtx.fillRect(0, 0, W, H);
+  // Corner vignette
+  const vg = pCtx.createRadialGradient(W*.5,H*.5,H*.08, W*.5,H*.5,H*.9);
+  vg.addColorStop(0, 'rgba(0,0,0,0)');
+  vg.addColorStop(1, 'rgba(0,0,0,0.52)');
+  pCtx.fillStyle = vg;
+  pCtx.fillRect(0, 0, W, H);
 }
 
+// ── Colour engine ──────────────────────────────────────────
+// Every freq bin gets its own hue across 300° of the colour wheel.
+// Volume drives lightness + alpha. Style shifts the anchor hue.
+function freqToHue(nf) {
+  const def = STYLES[currentStyle];
+  const sweep = Math.pow(nf, 0.5) * 300;   // 0 → 300 deg
+  return (def.hueShift + sweep + hueWander) % 360;
+}
+
+function getColour(nf, vol, energy) {
+  const def = STYLES[currentStyle];
+  const v   = vol / 255;
+  const hue = freqToHue(nf);
+
+  if (def.inkMode) {
+    // Ink: low sat on bass, colour accent on mids/highs
+    const sat = nf > 0.15
+      ? Math.round(25 + v * 60 * def.sat)
+      : Math.round(8  + v * 18);
+    const lit = Math.round(7 + v * 58 + energy * 10);
+    return `hsla(${Math.round(hue)},${sat}%,${lit}%,${0.07 + v * 0.82})`;
+  } else {
+    const sat = Math.round(50 + v * 45 * def.sat);
+    const lit = Math.round(12 + v * 52 + energy * 8);
+    return `hsla(${Math.round(hue)},${sat}%,${lit}%,${0.07 + v * 0.82})`;
+  }
+}
+
+function getGlow(nf, energy) {
+  const hue = freqToHue(nf);
+  return `hsla(${Math.round(hue)},80%,62%,${0.03 + energy * 0.09})`;
+}
+
+// ── Shape library ──────────────────────────────────────────
+const SHAPE_SETS = {
+  ink:   ['stroke','splat','drip','thread','stroke','drip'],
+  bloom: ['petal','arc','scatter','petal','arc','petal'],
+  tide:  ['wave','ripple','foam','wave','thread','ripple'],
+  ember: ['splat','flare','spark','splat','flare','spark'],
+};
+
+function drawMark(c, x, y, size, colour, shape, angle) {
+  c.save();
+  c.translate(x, y);
+  c.rotate(angle);
+  c.fillStyle = colour;
+  c.strokeStyle = colour;
+
+  switch (shape) {
+    case 'stroke':
+      c.beginPath();
+      c.ellipse(0, 0, size*(2.0+Math.random()*1.8), size*(0.17+Math.random()*0.2), 0, 0, Math.PI*2);
+      c.fill(); break;
+
+    case 'splat': {
+      const pts = 5 + Math.floor(Math.random()*5);
+      c.beginPath();
+      for (let i=0;i<pts;i++){
+        const a=(i/pts)*Math.PI*2, r=size*(0.5+Math.random());
+        i===0 ? c.moveTo(Math.cos(a)*r,Math.sin(a)*r)
+              : c.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+      }
+      c.closePath(); c.fill(); break;
+    }
+    case 'drip':
+      c.beginPath();
+      c.ellipse(0,0,size*0.24,size*(1.3+Math.random()*0.9),0,0,Math.PI*2);
+      c.fill(); break;
+
+    case 'thread':
+      c.lineWidth = 0.5 + Math.random();
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(0,-size*2.2);
+      c.bezierCurveTo(size*(Math.random()-.5)*2.5,-size,
+                      size*(Math.random()-.5)*2.5, size, 0,size*2.2);
+      c.stroke(); break;
+
+    case 'petal':
+      c.beginPath();
+      c.ellipse(0,-size*.4,size*.48,size,0,0,Math.PI*2);
+      c.fill(); break;
+
+    case 'arc':
+      c.lineWidth = size*(0.28+Math.random()*0.28);
+      c.lineCap = 'round';
+      c.beginPath();
+      c.arc(0,0,size*(.9+Math.random()*.6),
+            -(0.22+Math.random()*.65)*Math.PI/1,
+             (0.22+Math.random()*.65)*Math.PI/1);
+      c.stroke(); break;
+
+    case 'scatter':
+      for(let i=0;i<5;i++){
+        c.beginPath();
+        c.arc((Math.random()-.5)*size*3.5,(Math.random()-.5)*size*3.5,
+              size*(.15+Math.random()*.25),0,Math.PI*2);
+        c.fill();
+      } break;
+
+    case 'wave':
+      c.lineWidth = size*(.22+Math.random()*.18);
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(-size*2.8,0);
+      c.quadraticCurveTo(-size*1.4,-size*(.5+Math.random()*.9),0,0);
+      c.quadraticCurveTo( size*1.4, size*(.5+Math.random()*.9),size*2.8,0);
+      c.stroke(); break;
+
+    case 'ripple':
+      c.lineWidth=.5;
+      for(let r=0;r<3;r++){
+        c.globalAlpha *= (.65-r*.18);
+        c.beginPath(); c.arc(0,0,size*(.45+r*.65),0,Math.PI*2); c.stroke();
+      } break;
+
+    case 'foam':
+      c.beginPath();
+      c.arc(0,0,size*(.22+Math.random()*.35),0,Math.PI*2);
+      c.fill(); break;
+
+    case 'flare':
+      c.beginPath();
+      c.moveTo(0,-size*2.8);
+      c.lineTo(size*.3,size*.5);
+      c.lineTo(-size*.3,size*.5);
+      c.closePath(); c.fill(); break;
+
+    case 'spark':
+      c.lineWidth=.6+Math.random()*.8; c.lineCap='round';
+      for(let i=0;i<3+Math.floor(Math.random()*4);i++){
+        const a=Math.random()*Math.PI*2;
+        c.beginPath(); c.moveTo(0,0);
+        c.lineTo(Math.cos(a)*size*(1.3+Math.random()*1.5),
+                 Math.sin(a)*size*(1.3+Math.random()*1.5));
+        c.stroke();
+      } break;
+
+    default:
+      c.beginPath(); c.arc(0,0,size,0,Math.PI*2); c.fill();
+  }
+  c.restore();
+}
+
+// ── Render frame ───────────────────────────────────────────
 function renderFrame(dataArray) {
-  const W = canvas.width / window.devicePixelRatio;
-  const H = canvas.height / window.devicePixelRatio;
   const bufLen = analyser.frequencyBinCount;
-  const sampleRate = audioCtx.sampleRate;
-  const style = STYLES[currentStyle];
-  const now = Date.now();
+  const now    = Date.now();
 
-  // Compute energy
-  let totalE = 0, bassE = 0, midE = 0, highE = 0;
-  for (let i=0; i<bufLen; i++) {
-    const v = dataArray[i];
-    totalE += v;
-    const f = (i/bufLen)*(sampleRate/2);
-    if (f < 250) bassE += v;
-    else if (f < 3000) midE += v;
-    else highE += v;
+  // Energy
+  let totalE=0, bassE=0, highE=0;
+  for(let i=0;i<bufLen;i++){
+    const v=dataArray[i]; totalE+=v;
+    const f=(i/bufLen)*(audioCtx.sampleRate/2);
+    if(f<300) bassE+=v; else if(f>4000) highE+=v;
   }
-  const avgE = totalE / bufLen;
-  const isBeat = avgE > prevEnergy * 1.22 && avgE > 25 && (now - lastBeatTime) > 220;
-  if (isBeat) lastBeatTime = now;
-  prevEnergy = avgE * 0.8 + prevEnergy * 0.2;
-
-  // Infer emotion
-  const normBass = bassE / (bufLen * 0.12 * 255);
-  const normHigh = highE / (bufLen * 0.65 * 255);
+  const avgE   = totalE / bufLen;
   const energy = avgE / 255;
-  const valence = normHigh / (normBass + 0.01);
-  updateEmotion(energy, valence);
+  const isBeat = avgE > prevEnergy*1.18 && avgE>20 && (now-lastBeatT)>190;
+  if(isBeat) lastBeatT = now;
+  prevEnergy = avgE*.76 + prevEnergy*.24;
 
-  // Subtle fade
-  ctx.fillStyle = style.fade;
-  ctx.fillRect(0, 0, W, H);
+  hueWander = (hueWander + 0.12) % 360;
 
-  // Sample frequencies
-  const bandCount = isBeat ? 80 : 40;
-  const step = Math.max(1, Math.floor(bufLen / bandCount));
+  // Timeline cursor
+  if(audioEl && audioEl.duration){
+    timelineCursor = audioEl.currentTime / audioEl.duration;
+  } else if(isMicMode && micStartTime){
+    timelineCursor = Math.min((Date.now()-micStartTime)/1000/MIC_SPAN, 1);
+  }
+  const tc = 0.02 + timelineCursor * 0.96; // keep marks off hard edges
 
-  for (let i = 0; i < bufLen; i += step) {
+  // Emotion
+  const normBass = bassE/(bufLen*.08*255+1);
+  const normHigh = highE/(bufLen*.6*255+1);
+  updateEmotion(energy, normHigh/(normBass+.01));
+
+  // Clear glow layer
+  gCtx.clearRect(0,0,W,H);
+
+  // Draw marks
+  const shapes   = SHAPE_SETS[currentStyle];
+  const bandCount = isBeat ? 110 : 60;
+  const step = Math.max(1, Math.floor(bufLen/bandCount));
+
+  for(let i=0;i<bufLen;i+=step){
     const val = dataArray[i];
-    if (val < 6) continue;
+    if(val < 4) continue;
+    const nf = i/bufLen;
+    const v  = val/255;
 
-    const normFreq = i / bufLen;
-    const freq = normFreq * (sampleRate / 2);
-    const v = val / 255;
+    // X = timeline cursor + tiny jitter
+    const jX = (isBeat ? 0.16 : 0.09) + nf*0.06;
+    const cx = Math.max(2, Math.min(W-2, (tc+(Math.random()-.5)*jX*2)*W));
 
-    // Position: low freq cluster near center-bottom, highs near top/sides
-    const freqBias = normFreq;
-    const spreadX = 0.3 + freqBias * 0.6;
-    const spreadY = 0.15 + (1 - freqBias) * 0.55;
-    const cx = W * 0.5 + (Math.random() - 0.5) * W * spreadX;
-    const cy = H * (0.4 + freqBias * 0.3) + (Math.random() - 0.5) * H * spreadY;
+    // Y = frequency band → vertical zone
+    let baseY, spreadY;
+    if     (nf<0.08) { baseY=0.74; spreadY=0.18; }  // sub-bass: bottom
+    else if(nf<0.20) { baseY=0.60; spreadY=0.28; }  // bass
+    else if(nf<0.45) { baseY=0.50; spreadY=0.38; }  // mid: full height
+    else if(nf<0.70) { baseY=0.36; spreadY=0.30; }  // upper-mid
+    else             { baseY=0.20; spreadY=0.26; }  // air: top
 
-    const size = (1.5 + v * (isBeat ? 16 : 10)) * (0.7 + normFreq * 0.6);
-    const color = style.getColor(normFreq, val, isBeat);
-    const shape = style.getShape(normFreq);
-    const angle = (Math.random() - 0.5) * Math.PI * (freqBias < 0.3 ? 0.3 : 1.2);
+    const bp = isBeat ? 1.4 : 1.0;
+    const cy = (baseY + (Math.random()-.5)*spreadY*bp) * H;
 
-    drawShape(cx, cy, size, color, shape, angle);
+    const size   = (1.0 + v*(isBeat?20:12)) * (0.6+nf*0.7);
+    const colour = getColour(nf, val, energy);
+    const shape  = shapes[Math.floor(Math.random()*shapes.length)];
+    const angle  = (Math.random()-.5)*Math.PI*(nf<0.2 ? 0.4 : 1.6);
+
+    drawMark(pCtx, cx, cy, size, colour, shape, angle);
+
+    // Glow for loud marks
+    if(v > 0.38){
+      const gr = gCtx.createRadialGradient(cx,cy,0,cx,cy,size*4.5);
+      gr.addColorStop(0, getGlow(nf, energy));
+      gr.addColorStop(1, 'transparent');
+      gCtx.fillStyle = gr;
+      gCtx.beginPath();
+      gCtx.arc(cx, cy, size*4.5, 0, Math.PI*2);
+      gCtx.fill();
+    }
   }
 
-  // Beat burst
-  if (isBeat) {
-    const bx = W * (0.2 + Math.random() * 0.6);
-    const by = H * (0.2 + Math.random() * 0.6);
-    const br = 20 + (avgE/255)*H*0.25;
-    const bg = ctx.createRadialGradient(bx, by, 0, bx, by, br);
-    const col = STYLES[currentStyle].getColor(0.5, avgE, true);
-    bg.addColorStop(0, col.replace(/[\d.]+\)$/, '0.07)'));
-    bg.addColorStop(1, 'transparent');
-    ctx.fillStyle = bg;
-    ctx.beginPath();
-    ctx.arc(bx, by, br, 0, Math.PI*2);
-    ctx.fill();
+  // Beat burst at cursor
+  if(isBeat){
+    const bx = tc*W, by = H*(.3+Math.random()*.4);
+    const br = H*(.09+energy*.20);
+    const bg2 = pCtx.createRadialGradient(bx,by,0,bx,by,br);
+    bg2.addColorStop(0,`hsla(${Math.round(freqToHue(.35))},70%,60%,${.05+energy*.08})`);
+    bg2.addColorStop(1,'transparent');
+    pCtx.fillStyle=bg2;
+    pCtx.beginPath(); pCtx.arc(bx,by,br,0,Math.PI*2); pCtx.fill();
   }
+
+  // Faint cursor line
+  gCtx.strokeStyle='rgba(255,255,255,0.035)';
+  gCtx.lineWidth=1;
+  gCtx.beginPath(); gCtx.moveTo(tc*W,0); gCtx.lineTo(tc*W,H); gCtx.stroke();
 
   frameCount++;
 }
 
-// ─── EMOTION DETECTION ───────────────────────────────────────────────────────
-function updateEmotion(energy, valence) {
-  let quadrant;
-  if (energy < 0.08) {
-    quadrant = valence > 1 ? 'high_calm' : 'low_calm';
-  } else if (energy < 0.18) {
-    quadrant = valence > 1.2 ? 'high_calm' : 'low_calm';
-  } else {
-    quadrant = valence > 0.8 ? 'high_tense' : 'low_tense';
-  }
-
-  emotionHistory.push(quadrant);
-  if (emotionHistory.length > 30) emotionHistory.shift();
-
-  // Most common in recent history
-  const counts = {};
-  emotionHistory.forEach(q => counts[q] = (counts[q]||0)+1);
-  const dominant = Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
-
-  const words = EMOTIONS[dominant];
-  if (!currentEmotion || frameCount % 120 === 0) {
-    currentEmotion = words[Math.floor(Math.random()*words.length)];
-    document.getElementById('emotion-word').textContent = currentEmotion;
+// ── Emotion ────────────────────────────────────────────────
+function updateEmotion(energy, valence){
+  const q = energy<.07 ? (valence>1 ?'high_calm':'low_calm')
+           : energy<.17 ? (valence>1.2?'high_calm':'low_calm')
+           : (valence>.85?'high_tense':'low_tense');
+  emotionHistory.push(q);
+  if(emotionHistory.length>40) emotionHistory.shift();
+  const counts={};
+  emotionHistory.forEach(x=>counts[x]=(counts[x]||0)+1);
+  const dom=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+  if(!currentEmotion || frameCount%150===0){
+    const words=EMOTIONS[dom];
+    currentEmotion=words[Math.floor(Math.random()*words.length)];
+    document.getElementById('emotion-word').textContent=currentEmotion;
     document.getElementById('canvas-label').classList.add('visible');
   }
 }
 
-// ─── AUDIO SETUP ─────────────────────────────────────────────────────────────
-function setupAnalyser() {
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 4096;
-  analyser.smoothingTimeConstant = 0.85;
-}
-
-function animLoop() {
-  if (!isRunning) return;
-  const data = new Uint8Array(analyser.frequencyBinCount);
+// ── Anim loop ──────────────────────────────────────────────
+function animLoop(){
+  if(!isRunning) return;
+  const data=new Uint8Array(analyser.frequencyBinCount);
   analyser.getByteFrequencyData(data);
   renderFrame(data);
-  animId = requestAnimationFrame(animLoop);
+  animId=requestAnimationFrame(animLoop);
 }
 
-async function toggleMic() {
-  if (isMicMode) {
+// ── File input ─────────────────────────────────────────────
+function triggerFileInput(){
+  // Reset so same file can be re-selected
+  document.getElementById('file-input').value='';
+  document.getElementById('file-input').click();
+}
+
+document.getElementById('file-input').addEventListener('change', async function(){
+  const file = this.files[0];
+  if(!file) return;
+
+  // Tear everything down first
+  stopAll();
+  clearCanvas();
+  document.getElementById('upload-overlay').classList.add('hidden');
+  setStatus('Loading — '+file.name);
+
+  // Always create a fresh AudioContext to avoid "source already connected" errors
+  try { if(audioCtx) await audioCtx.close(); } catch(e){}
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 4096;
+  analyser.smoothingTimeConstant = 0.83;
+
+  audioEl = new Audio(URL.createObjectURL(file));
+  audioEl.crossOrigin = 'anonymous';
+
+  source = audioCtx.createMediaElementSource(audioEl);
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  audioEl.addEventListener('timeupdate', () => {
+    if(!audioEl.duration) return;
+    const pct = audioEl.currentTime / audioEl.duration * 100;
+    document.getElementById('progress-fill').style.width = pct+'%';
+    const m=Math.floor(audioEl.currentTime/60);
+    const s=Math.floor(audioEl.currentTime%60).toString().padStart(2,'0');
+    document.getElementById('canvas-time').textContent = m+':'+s;
+  });
+
+  audioEl.addEventListener('ended', () => {
+    isRunning=false; cancelAnimationFrame(animId);
+    setPlayState(false);
+    setStatus('Complete — your emotional painting is ready to save');
+  });
+
+  // Enable play button
+  const pb = document.getElementById('play-btn');
+  pb.disabled = false;
+  timelineCursor = 0;
+
+  // Auto-play
+  await audioCtx.resume();
+  audioEl.play();
+  isRunning=true; animLoop();
+  setPlayState(true);
+  setStatus('Painting — '+file.name);
+});
+
+// ── Play / Pause ───────────────────────────────────────────
+function togglePlay(){
+  if(!audioEl) return;
+  if(audioEl.paused){
+    audioCtx.resume().then(()=>{ audioEl.play(); });
+    isRunning=true; animLoop();
+    setPlayState(true);
+    setStatus('Painting…');
+  } else {
+    audioEl.pause();
+    isRunning=false; cancelAnimationFrame(animId);
+    setPlayState(false);
+    setStatus('Paused — painting preserved');
+  }
+}
+
+function setPlayState(playing){
+  const icon  = document.getElementById('play-icon');
+  const label = document.getElementById('play-label');
+  if(playing){
+    icon.innerHTML  = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    label.textContent = 'Pause';
+    document.getElementById('play-btn').classList.add('active');
+  } else {
+    icon.innerHTML  = '<polygon points="5,3 19,12 5,21"/>';
+    label.textContent = 'Play';
+    document.getElementById('play-btn').classList.remove('active');
+  }
+}
+
+// ── Seek (click on progress bar) ───────────────────────────
+function seekAudio(e){
+  if(!audioEl || !audioEl.duration) return;
+  const bar = document.getElementById('progress-bar');
+  const pct = e.offsetX / bar.offsetWidth;
+  audioEl.currentTime = pct * audioEl.duration;
+  // Update timeline cursor immediately
+  timelineCursor = pct;
+}
+
+// ── Microphone ─────────────────────────────────────────────
+async function toggleMic(){
+  if(isMicMode){
     stopAll();
     document.getElementById('mic-btn').classList.remove('active');
     setStatus('Microphone off');
     return;
   }
-  try {
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') await audioCtx.resume();
-    setupAnalyser();
+  try{
+    micStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    try { if(audioCtx) await audioCtx.close(); } catch(e){}
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize=4096; analyser.smoothingTimeConstant=0.83;
     source = audioCtx.createMediaStreamSource(micStream);
     source.connect(analyser);
-    isMicMode = true;
-    isRunning = true;
+    isMicMode=true; isRunning=true;
+    micStartTime=Date.now(); timelineCursor=0;
     document.getElementById('mic-btn').classList.add('active');
     document.getElementById('upload-overlay').classList.add('hidden');
+    document.getElementById('play-btn').disabled=true;
     setStatus('Listening via microphone — painting your sound…');
     animLoop();
-  } catch(e) {
+  } catch(e){
     setStatus('Microphone access denied — check browser permissions');
   }
 }
 
-async function loadAudioFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  stopAll();
-  clearCanvas();
-  document.getElementById('upload-overlay').classList.add('hidden');
-  setStatus('Loading ' + file.name + '…');
-
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') await audioCtx.resume();
-  setupAnalyser();
-
-  const url = URL.createObjectURL(file);
-  audioElement = new Audio();
-  audioElement.src = url;
-  audioElement.crossOrigin = 'anonymous';
-
-  source = audioCtx.createMediaElementSource(audioElement);
-  source.connect(analyser);
-  analyser.connect(audioCtx.destination);
-
-  audioElement.addEventListener('timeupdate', () => {
-    if (audioElement.duration) {
-      const pct = (audioElement.currentTime / audioElement.duration) * 100;
-      document.getElementById('progress-fill').style.width = pct + '%';
-      const m = Math.floor(audioElement.currentTime/60);
-      const s = Math.floor(audioElement.currentTime%60).toString().padStart(2,'0');
-      document.getElementById('canvas-time').textContent = m+':'+s;
-    }
-  });
-
-  audioElement.addEventListener('ended', () => {
-    isRunning = false;
-    cancelAnimationFrame(animId);
-    setStatus('Complete — your emotional painting is ready to save');
-    document.getElementById('play-icon').innerHTML = '<polygon points="5,3 19,12 5,21"/>';
-    document.getElementById('play-label').textContent = 'Play';
-  });
-
-  const playBtn = document.getElementById('play-btn');
-  playBtn.style.display = 'inline-flex';
-  setStatus('Ready — ' + file.name);
-  // Auto-play
-  togglePlay();
-  e.target.value = '';
+// ── Stop all ───────────────────────────────────────────────
+function stopAll(){
+  isRunning=false; isMicMode=false; cancelAnimationFrame(animId);
+  if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; }
+  if(audioEl){ audioEl.pause(); audioEl=null; }
+  source=null; analyser=null;
+  document.getElementById('play-btn').disabled=true;
+  document.getElementById('progress-fill').style.width='0%';
+  setPlayState(false);
+  emotionHistory=[]; frameCount=0; prevEnergy=0; hueWander=0; timelineCursor=0;
 }
 
-function togglePlay() {
-  if (!audioElement) return;
-  if (audioElement.paused) {
-    audioElement.play();
-    document.getElementById('play-icon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-    document.getElementById('play-label').textContent = 'Pause';
-    isRunning = true;
-    animLoop();
-    setStatus('Painting…');
-  } else {
-    audioElement.pause();
-    document.getElementById('play-icon').innerHTML = '<polygon points="5,3 19,12 5,21"/>';
-    document.getElementById('play-label').textContent = 'Play';
-    isRunning = false;
-    cancelAnimationFrame(animId);
-    setStatus('Paused');
-  }
-}
-
-function stopAll() {
-  isRunning = false;
-  isMicMode = false;
-  cancelAnimationFrame(animId);
-  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
-  if (source) { try { source.disconnect(); } catch(e){} source = null; }
-  if (audioElement) { audioElement.pause(); audioElement = null; }
-  document.getElementById('play-btn').style.display = 'none';
-  document.getElementById('progress-fill').style.width = '0%';
-  emotionHistory = [];
-  frameCount = 0; prevEnergy = 0;
-}
-
-function clearCanvas() {
-  const style = STYLES[currentStyle];
-  const W = canvas.width / window.devicePixelRatio;
-  const H = canvas.height / window.devicePixelRatio;
-  ctx.fillStyle = style.bg;
-  ctx.fillRect(0, 0, W, H);
-  // Vignette
-  const grad = ctx.createRadialGradient(W/2, H/2, H*0.1, W/2, H/2, H*0.85);
-  grad.addColorStop(0, 'rgba(0,0,0,0)');
-  grad.addColorStop(1, 'rgba(0,0,0,0.5)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
+// ── Clear canvas ───────────────────────────────────────────
+function clearCanvas(){
+  if(!W||!H){ resizeCanvases(); return; }
+  pCtx.clearRect(0,0,W,H);
+  gCtx.clearRect(0,0,W,H);
+  paintBg();
   document.getElementById('canvas-label').classList.remove('visible');
-  emotionHistory = [];
-  frameCount = 0; prevEnergy = 0; currentEmotion = '';
+  emotionHistory=[]; frameCount=0; prevEnergy=0; hueWander=0;
+  timelineCursor=0; currentEmotion='';
 }
 
-function saveCanvas() {
-  const name = 'onkyo_' + currentStyle + '_' + Date.now() + '.png';
-  const link = document.createElement('a');
-  link.download = name;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+// ── Save ───────────────────────────────────────────────────
+function saveCanvas(){
+  const dpr=window.devicePixelRatio||1;
+  const out=document.createElement('canvas');
+  out.width=W*dpr; out.height=H*dpr;
+  const oc=out.getContext('2d');
+  oc.drawImage(paintCanvas,0,0);
+  oc.drawImage(glowCanvas,0,0);
+  const a=document.createElement('a');
+  a.download='onkyo_'+currentStyle+'_'+Date.now()+'.png';
+  a.href=out.toDataURL('image/png');
+  a.click();
 }
 
-function setStyle(el) {
-  document.querySelectorAll('.style-pill').forEach(p => p.classList.remove('active'));
+// ── Style ──────────────────────────────────────────────────
+function setStyle(el){
+  document.querySelectorAll('.style-pill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
-  currentStyle = el.dataset.style;
+  currentStyle=el.dataset.style;
   clearCanvas();
 }
 
-function setStatus(msg) {
-  document.getElementById('status-text').textContent = msg;
+function setStatus(msg){
+  document.getElementById('status-text').textContent=msg;
 }
 
-// Init
-clearCanvas();
+// ── Init ───────────────────────────────────────────────────
+resizeCanvases();
 </script>
 </body>
 </html>
