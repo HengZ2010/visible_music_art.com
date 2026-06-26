@@ -1,1021 +1,1550 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Onkyo — Music Emotion Art</title>
+<title>音響 Onkyo — 音乐情绪艺术生成器</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --washi: #F7F6F2;
-    --sumi: #1A1A1A;
-    --moss: #8B9D77;
-    --gold: #C9A96E;
-    --indigo: #6B8CAE;
-    --mist: #E8E6DF;
-    --ash: #9A9790;
-  }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--washi);
-    color: var(--sumi);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 3rem;
-    height: 64px;
-    background: rgba(247,246,242,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--mist);
-  }
-  .nav-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
-    font-weight: 300;
-    letter-spacing: 0.18em;
-    color: var(--sumi);
-    text-decoration: none;
-  }
-  .nav-logo span { font-style: italic; color: var(--moss); }
-  .nav-logo small {
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    font-style: normal;
-    color: var(--ash);
-    font-family: 'Inter', sans-serif;
-    font-weight: 300;
-  }
-  .nav-hint {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ash);
-    font-weight: 300;
-  }
-
-  /* HERO */
-  .hero {
-    padding-top: 64px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  .hero-text {
-    padding: 5rem 3rem 2.5rem;
-    max-width: 580px;
-  }
-  .eyebrow {
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--moss);
-    font-weight: 500;
-    margin-bottom: 1.25rem;
-  }
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.4rem, 5vw, 3.6rem);
-    font-weight: 300;
-    line-height: 1.15;
-    color: var(--sumi);
-    margin-bottom: 1.25rem;
-  }
-  .hero-title em { font-style: italic; color: var(--indigo); }
-  .hero-sub {
-    font-size: 0.875rem;
-    line-height: 1.75;
-    color: var(--ash);
-    font-weight: 300;
-    max-width: 400px;
-  }
-
-  /* STUDIO */
-  .studio {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0 3rem 4rem;
-    gap: 1rem;
-  }
-
-  /* CONTROLS */
-  .controls-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.52rem 1rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.74rem;
-    font-weight: 400;
-    letter-spacing: 0.07em;
-    border: 1px solid var(--mist);
-    background: var(--washi);
-    color: var(--sumi);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    outline: none;
-    white-space: nowrap;
-  }
-  .btn:hover { background: var(--mist); border-color: var(--ash); }
-  .btn.active { background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
-  .btn.primary { background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
-  .btn.primary:hover { opacity: 0.8; background: var(--sumi); }
-  .btn svg { width: 13px; height: 13px; flex-shrink: 0; }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-  .divider { width: 1px; height: 26px; background: var(--mist); margin: 0 0.15rem; flex-shrink: 0; }
-
-  .style-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-left: auto;
-  }
-  .style-label {
-    font-size: 0.66rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--ash);
-  }
-  .style-pills { display: flex; gap: 2px; }
-  .style-pill {
-    padding: 0.38rem 0.75rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    border: 1px solid var(--mist);
-    background: transparent;
-    color: var(--ash);
-    cursor: pointer;
-    transition: all 0.14s;
-    font-family: 'Inter', sans-serif;
-  }
-  .style-pill:hover { color: var(--sumi); border-color: var(--ash); }
-  .style-pill.active { background: var(--sumi); color: var(--washi); border-color: var(--sumi); }
-
-  /* PROGRESS */
-  .progress-bar {
-    height: 1px;
-    background: var(--mist);
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .progress-fill {
-    position: absolute;
-    top: 0; left: 0;
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--indigo), var(--moss));
-    transition: width 0.15s linear;
-    pointer-events: none;
-  }
-
-  /* CANVAS */
-  .canvas-container {
-    position: relative;
-    background: #0B0B0E;
-    overflow: hidden;
-    flex: 1;
-    min-height: 440px;
-  }
-  #artCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0; left: 0;
-    z-index: 0;
-  }
-  /* glowCanvas injected by JS with z-index:1, pointer-events:none */
-
-  /* Upload overlay — z-index 20 so it's always on top */
-  .upload-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    cursor: pointer;
-    z-index: 20;
-    transition: opacity 0.25s;
-  }
-  .upload-overlay.hidden { opacity: 0; pointer-events: none; }
-  .upload-circle {
-    width: 68px; height: 68px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s;
-  }
-  .upload-overlay:hover .upload-circle { border-color: rgba(255,255,255,0.4); }
-  .upload-circle svg { width: 22px; height: 22px; stroke: rgba(255,255,255,0.5); }
-  .upload-text {
-    text-align: center;
-    color: rgba(255,255,255,0.32);
-    font-size: 0.76rem;
-    letter-spacing: 0.12em;
-    font-weight: 300;
-    line-height: 1.9;
-  }
-  .upload-text strong { color: rgba(255,255,255,0.55); font-weight: 400; }
-
-  /* Canvas overlays */
-  .canvas-label {
-    position: absolute;
-    bottom: 1.5rem;
-    left: 2rem;
-    z-index: 5;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.6s;
-  }
-  .canvas-label.visible { opacity: 1; }
-  .emotion-word {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
-    font-style: italic;
-    font-weight: 300;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.08em;
-  }
-  .canvas-time {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.18);
-    margin-top: 0.2rem;
-  }
-
-  /* STATUS */
-  .status-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .status-text {
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    color: var(--ash);
-    font-weight: 300;
-  }
-  .legend { display: flex; gap: 1.2rem; align-items: center; }
-  .legend-item {
-    display: flex; align-items: center; gap: 0.35rem;
-    font-size: 0.63rem; letter-spacing: 0.09em; color: var(--ash);
-  }
-  .legend-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
-  /* PHILOSOPHY */
-  .philosophy {
-    padding: 5rem 3rem;
-    border-top: 1px solid var(--mist);
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 4rem;
-  }
-  .phil-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem; font-weight: 300; font-style: italic;
-    color: var(--mist); line-height: 1; margin-bottom: 1rem;
-  }
-  .phil-title {
-    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--sumi); font-weight: 500; margin-bottom: 0.75rem;
-  }
-  .phil-body { font-size: 0.82rem; line-height: 1.8; color: var(--ash); font-weight: 300; }
-
-  /* FOOTER */
-  footer {
-    padding: 2rem 3rem;
-    border-top: 1px solid var(--mist);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .footer-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.9rem; font-weight: 300; letter-spacing: 0.2em; color: var(--ash);
-  }
-  .footer-note { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--mist); }
-
-  @media (max-width: 768px) {
-    nav, .hero-text, .studio, .philosophy, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .philosophy { grid-template-columns: 1fr; gap: 2.5rem; }
-    .style-group { margin-left: 0; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--washi:#F7F6F2;--sumi:#1A1A1A;--moss:#8B9D77;--indigo:#6B8CAE;--mist:#E8E6DF;--ash:#9A9790;--canvas-bg:#04040E}
+body{font-family:'Inter','Noto Serif SC','Noto Serif JP',sans-serif;background:var(--washi);color:var(--sumi);min-height:100vh;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:60px;background:rgba(247,246,242,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--mist)}
+.nav-logo{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:1.3rem;font-weight:300;letter-spacing:.18em;color:var(--sumi);text-decoration:none}
+.nav-logo span{font-style:italic;color:var(--moss)}
+.nav-logo small{font-size:.65rem;letter-spacing:.16em;color:var(--ash);font-family:'Inter',sans-serif;font-weight:300}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.nav-hint{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);font-weight:300}
+.lang-selector{display:flex;align-items:center;gap:3px;background:var(--mist);padding:2px;border-radius:3px}
+.lang-btn{background:transparent;border:none;color:var(--ash);font-size:.62rem;padding:.2rem .4rem;cursor:pointer;font-family:'Inter','Noto Serif SC',sans-serif;transition:all .15s;border-radius:2px}
+.lang-btn:hover{color:var(--sumi)}
+.lang-btn.active{background:var(--washi);color:var(--sumi);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hero{padding-top:60px;min-height:100vh;display:flex;flex-direction:column}
+.hero-text{padding:3.5rem 3rem 1.8rem;max-width:560px}
+.eyebrow{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--moss);font-weight:500;margin-bottom:1rem}
+.hero-title{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:300;line-height:1.3;color:var(--sumi);margin-bottom:1rem}
+.hero-title em{font-style:italic;color:var(--indigo)}
+.hero-sub{font-size:.83rem;line-height:1.82;color:var(--ash);font-weight:300;max-width:420px}
+.studio{flex:1;display:flex;flex-direction:column;padding:0 3rem 4rem;gap:.75rem}
+.controls-row{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem}
+.btn{display:inline-flex;align-items:center;gap:.38rem;padding:.45rem .88rem;font-family:'Inter',sans-serif;font-size:.71rem;font-weight:400;letter-spacing:.06em;border:1px solid var(--mist);background:var(--washi);color:var(--sumi);cursor:pointer;transition:all .13s;outline:none;white-space:nowrap}
+.btn:hover{background:var(--mist);border-color:var(--ash)}
+.btn.active{background:var(--sumi);color:var(--washi);border-color:var(--sumi)}
+.btn.primary{background:var(--sumi);color:var(--washi);border-color:var(--sumi)}
+.btn.primary:hover{opacity:.78}
+.btn.piano-btn{background:#0D0820;color:rgba(255,255,255,.88);border-color:#3d2a80;letter-spacing:.07em}
+.btn.piano-btn:hover{background:#1a1040;border-color:#6b4fd4;color:#fff}
+.btn svg{width:12px;height:12px;flex-shrink:0}
+.btn:disabled{opacity:.28;cursor:not-allowed}
+.divider{width:1px;height:21px;background:var(--mist);flex-shrink:0}
+.style-group{display:flex;align-items:center;gap:.45rem;margin-left:auto;flex-wrap:wrap}
+.style-label{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+.style-pills{display:flex;gap:2px}
+.style-pill{padding:.3rem .65rem;font-size:.67rem;letter-spacing:.05em;border:1px solid var(--mist);background:transparent;color:var(--ash);cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif}
+.style-pill:hover{color:var(--sumi);border-color:var(--ash)}
+.style-pill.active{background:var(--sumi);color:var(--washi);border-color:var(--sumi)}
+.canvas-viewport{position:relative;height:320px;overflow-x:auto;overflow-y:hidden;background:var(--canvas-bg);transition:background .6s ease;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;border:1px solid var(--mist)}
+.canvas-viewport::-webkit-scrollbar{height:3px}
+.canvas-viewport::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+.canvas-viewport::-webkit-scrollbar-track{background:transparent}
+.canvas-track{position:relative;height:100%;min-width:100%}
+#artCanvas{position:absolute;top:0;left:0;display:block}
+.upload-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.3rem;cursor:pointer;z-index:20;transition:opacity .22s;background:rgba(0,0,0,.62);backdrop-filter:blur(4px)}
+.upload-overlay.hidden{opacity:0;pointer-events:none}
+.upload-circle{width:56px;height:56px;border:1px solid rgba(255,255,255,.16);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.18s}
+.upload-overlay:hover .upload-circle{border-color:rgba(255,255,255,.42)}
+.upload-circle svg{width:18px;height:18px;stroke:rgba(255,255,255,.48)}
+.upload-text{text-align:center;color:rgba(255,255,255,.5);font-size:.71rem;letter-spacing:.09em;font-weight:300;line-height:2}
+.upload-text strong{color:rgba(255,255,255,.82);font-weight:400}
+.video-panel{display:none;background:#000;border-bottom:1px solid #111}
+.video-panel.visible{display:block}
+.video-panel video{display:block;width:100%;max-height:36vh;object-fit:contain}
+.progress-wrap{display:flex;align-items:center;gap:.7rem}
+.progress-bar{flex:1;height:1px;background:var(--mist);position:relative;cursor:pointer;overflow:hidden}
+.progress-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,var(--indigo),var(--moss));transition:width .08s linear}
+.time-display{font-size:.63rem;color:var(--ash);font-weight:300;white-space:nowrap;min-width:68px;text-align:right}
+.status-row{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.status-text{font-size:.65rem;letter-spacing:.08em;color:var(--ash);font-weight:300}
+.speed-row{display:flex;align-items:center;gap:.65rem}
+.speed-label{font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);white-space:nowrap}
+.speed-slider{flex:1;-webkit-appearance:none;height:1px;background:var(--mist);outline:none;cursor:pointer}
+.speed-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;background:var(--sumi);border-radius:50%;cursor:pointer}
+.speed-slider::-moz-range-thumb{width:10px;height:10px;background:var(--sumi);border-radius:50%;border:none;cursor:pointer}
+.speed-val{font-size:.61rem;color:var(--ash);min-width:40px;text-align:right;font-weight:300}
+/* Piano CTA strip */
+.piano-cta{margin:0 3rem 2rem;padding:1.6rem 2rem;border:1px solid rgba(61,42,128,.25);background:linear-gradient(135deg,rgba(13,8,32,.03),rgba(61,42,128,.06));display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.piano-cta-left{}
+.piano-cta-eyebrow{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:#7b5cd4;font-weight:500;margin-bottom:.4rem}
+.piano-cta-title{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:1.1rem;font-weight:300;color:var(--sumi);margin-bottom:.3rem}
+.piano-cta-title em{font-style:italic;color:#5b3daa}
+.piano-cta-sub{font-size:.75rem;color:var(--ash);line-height:1.72;max-width:500px}
+.philosophy{padding:4rem 3rem;border-top:1px solid var(--mist);display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem}
+.phil-num{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:1.7rem;font-weight:300;font-style:italic;color:var(--mist);line-height:1;margin-bottom:.8rem}
+.phil-title{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sumi);font-weight:500;margin-bottom:.6rem}
+.phil-body{font-size:.79rem;line-height:1.87;color:var(--ash);font-weight:300}
+.color-key{padding:2.5rem 3rem 3rem;border-top:1px solid var(--mist)}
+.color-key-title{font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin-bottom:1.2rem}
+.color-key-grid{display:flex;flex-wrap:wrap;gap:.5rem}
+.color-key-item{display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:var(--ash);background:var(--mist);padding:.28rem .65rem;border-radius:2px}
+.color-key-swatch{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+footer{padding:1.6rem 3rem;border-top:1px solid var(--mist);display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:.86rem;font-weight:300;letter-spacing:.2em;color:var(--ash)}
+.footer-note{font-size:.62rem;color:var(--mist)}
+@media(max-width:768px){nav,.hero-text,.studio,.piano-cta,.philosophy,.color-key,footer{padding-left:1.3rem;padding-right:1.3rem}.philosophy{grid-template-columns:1fr;gap:1.8rem}.style-group{margin-left:0}.nav-right{gap:.5rem}.nav-hint{display:none}.piano-cta{margin-left:1.3rem;margin-right:1.3rem}}
 </style>
 </head>
 <body>
-
 <nav>
   <a href="#" class="nav-logo">音響 <span>Onkyo</span> <small>by HENG</small></a>
-  <span class="nav-hint">Music → Emotion → Art</span>
+  <div class="nav-right">
+    <span class="nav-hint" id="nav-hint">声波流动 → 情感共振 → 视觉艺术</span>
+    <div class="lang-selector">
+      <button class="lang-btn active" id="lang-zh" onclick="setLanguage('zh')">简</button>
+      <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+      <button class="lang-btn" id="lang-ja" onclick="setLanguage('ja')">日</button>
+    </div>
+  </div>
 </nav>
-
 <main>
-  <div class="hero">
-    <div class="hero-text">
-      <p class="eyebrow">Sound Should Be Visible</p>
-      <h1 class="hero-title">Every song has<br>a <em>shape.</em></h1>
-      <p class="hero-sub">Onkyo listens to music and renders its emotional structure as a painting — color from pitch, form from rhythm, light from feeling.</p>
-    </div>
-
-    <div class="studio">
-
-      <!-- Controls Row -->
-      <div class="controls-row">
-
-        <!-- Import Audio -->
-        <button class="btn" id="file-btn" onclick="triggerFileInput()" title="Import audio file">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-          </svg>
-          Import Audio
-        </button>
-        <input type="file" id="file-input" accept="audio/*" style="display:none">
-
-        <!-- Play / Pause -->
-        <button class="btn" id="play-btn" onclick="togglePlay()" disabled title="Play / Pause">
-          <svg id="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <polygon points="5,3 19,12 5,21"/>
-          </svg>
-          <span id="play-label">Play</span>
-        </button>
-
-        <!-- Microphone -->
-        <button class="btn" id="mic-btn" onclick="toggleMic()" title="Use microphone">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="22"/>
-          </svg>
-          Microphone
-        </button>
-
-        <div class="divider"></div>
-
-        <!-- Clear -->
-        <button class="btn" onclick="clearCanvas()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-          </svg>
-          Clear
-        </button>
-
-        <!-- Save -->
-        <button class="btn primary" onclick="saveCanvas()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7,10 12,15 17,10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          Save as PNG
-        </button>
-
-        <!-- Style pills -->
-        <div class="style-group">
-          <span class="style-label">Mood</span>
-          <div class="style-pills">
-            <button class="style-pill active" data-style="ink"   onclick="setStyle(this)">Ink</button>
-            <button class="style-pill"        data-style="bloom" onclick="setStyle(this)">Bloom</button>
-            <button class="style-pill"        data-style="tide"  onclick="setStyle(this)">Tide</button>
-            <button class="style-pill"        data-style="ember" onclick="setStyle(this)">Ember</button>
-          </div>
+<div class="hero">
+  <div class="hero-text">
+    <p class="eyebrow" id="hero-eyebrow">音律留形，声影相生</p>
+    <h1 class="hero-title" id="hero-title">将旋律晕染成<br>一幅<em>情绪画卷。</em></h1>
+    <p class="hero-sub" id="hero-sub">音響将音高、节奏与音量转化为温润舒缓的流体视觉。去除激进与锐利，让音律在留白与色彩层级交叉间诗意流淌，构筑属于你的声音画幅。</p>
+  </div>
+  <div class="studio">
+    <div class="controls-row">
+      <button class="btn" onclick="triggerFileInput()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span id="btn-import">导入媒体</span>
+      </button>
+      <input type="file" id="file-input" accept="audio/*,video/*" style="display:none">
+      <button class="btn" id="play-btn" onclick="togglePlay()" disabled>
+        <svg id="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
+        <span id="play-label">播放</span>
+      </button>
+      <button class="btn" id="mic-btn" onclick="toggleMic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+        <span id="btn-mic">麦克风</span>
+      </button>
+      <div class="divider"></div>
+      <button class="btn" onclick="clearAll()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg><span id="btn-reset">重置画布</span></button>
+      <button class="btn primary" onclick="saveCanvas()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btn-export">保存 PNG</span></button>
+      <div class="divider"></div>
+      <button class="btn piano-btn" onclick="openPianoMode()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="7" width="20" height="11" rx="1"/><line x1="7" y1="7" x2="7" y2="14"/><line x1="12" y1="7" x2="12" y2="14"/><line x1="17" y1="7" x2="17" y2="14"/><rect x="4.5" y="7" width="2" height="7" rx=".4" fill="currentColor" stroke="none" opacity=".75"/><rect x="9.5" y="7" width="2" height="7" rx=".4" fill="currentColor" stroke="none" opacity=".75"/><rect x="14.5" y="7" width="2" height="7" rx=".4" fill="currentColor" stroke="none" opacity=".75"/></svg>
+        <span id="btn-piano">钢琴肖像模式</span>
+      </button>
+      <div class="style-group">
+        <span class="style-label" id="style-label">艺术风格</span>
+        <div class="style-pills">
+          <button class="style-pill active" id="style-emotion" data-style="emotion" onclick="setStyle(this)">情感共鸣</button>
+          <button class="style-pill" id="style-ink" data-style="ink" onclick="setStyle(this)">古典水墨</button>
+          <button class="style-pill" id="style-neon" data-style="neon" onclick="setStyle(this)">赛博霓虹</button>
+          <button class="style-pill" id="style-pastel" data-style="pastel" onclick="setStyle(this)">治愈柔粉</button>
         </div>
       </div>
-
-      <!-- Progress bar (clickable to seek) -->
-      <div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-
-      <!-- Canvas area -->
-      <div class="canvas-container" id="canvas-container">
+    </div>
+    <div class="speed-row">
+      <span class="speed-label" id="speed-label">笔触流速 (绘制密度)</span>
+      <input type="range" class="speed-slider" id="speed-slider" min="20" max="160" value="45" step="5" oninput="updateSpeed(this)">
+      <span class="speed-val" id="speed-val">45 px/s</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progress-bar" onclick="seekAudio(event)"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="time-display" id="time-display">0:00 / 0:00</div>
+    </div>
+    <div class="video-panel" id="video-panel"><video id="video-el" playsinline controls></video></div>
+    <div class="canvas-viewport" id="canvas-viewport">
+      <div class="canvas-track" id="canvas-track">
         <canvas id="artCanvas"></canvas>
-
-        <!-- Upload prompt (hidden after first load) -->
         <div class="upload-overlay" id="upload-overlay" onclick="triggerFileInput()">
-          <div class="upload-circle">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke="rgba(255,255,255,0.55)">
-              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-            </svg>
-          </div>
-          <div class="upload-text">
-            <strong>Import a music file</strong><br>
-            or click Microphone to paint in real time<br>
-            mp3 &nbsp;·&nbsp; wav &nbsp;·&nbsp; ogg &nbsp;·&nbsp; flac &nbsp;·&nbsp; aac
-          </div>
-        </div>
-
-        <!-- Emotion / time overlay -->
-        <div class="canvas-label" id="canvas-label">
-          <div class="emotion-word" id="emotion-word">—</div>
-          <div class="canvas-time"  id="canvas-time">0:00</div>
+          <div class="upload-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke="rgba(255,255,255,.52)"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <div class="upload-text" id="upload-text"><strong>导入音频或视频 file</strong><br>或点击“麦克风”启动实时声音捕捉<br><span style="opacity:.55">支持格式: mp3 · wav · ogg · flac · mp4</span></div>
         </div>
       </div>
-
-      <!-- Status row -->
-      <div class="status-row">
-        <span class="status-text" id="status-text">Ready — import audio or use microphone</span>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#6B8CAE"></div>Bass</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#8B9D77"></div>Mid</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#C9A96E"></div>High</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#C08090"></div>Air</div>
-        </div>
-      </div>
-
-    </div><!-- /studio -->
-  </div><!-- /hero -->
-
-  <!-- Philosophy -->
-  <section class="philosophy">
-    <div>
-      <div class="phil-num">一</div>
-      <div class="phil-title">Pitch → Color</div>
-      <p class="phil-body">Every frequency maps to its own hue across the full colour wheel — deep bass becomes violet and indigo, midrange blooms into green and gold, high harmonics catch amber and rose.</p>
     </div>
-    <div>
-      <div class="phil-num">二</div>
-      <div class="phil-title">Volume → Form</div>
-      <p class="phil-body">Louder passages leave larger, more opaque marks. Quiet moments produce fine traces. The painting holds the full dynamic range of the song as texture and density.</p>
-    </div>
-    <div>
-      <div class="phil-num">三</div>
-      <div class="phil-title">Time → Space</div>
-      <p class="phil-body">The canvas reads left to right as a timeline. The beginning of a song paints the left edge; the end reaches the right. Every moment is permanently recorded in its place.</p>
-    </div>
-  </section>
+    <div class="status-row"><span class="status-text" id="status-text">就绪 — 请导入媒体，或开启麦克风开始绘制</span></div>
+  </div>
+</div>
+
+<!-- Piano CTA -->
+<div class="piano-cta">
+  <div class="piano-cta-left">
+    <div class="piano-cta-eyebrow" id="piano-cta-eyebrow">专属空间</div>
+    <div class="piano-cta-title" id="piano-cta-title">钢琴肖像模式 — <em>Piano Portrait</em></div>
+    <p class="piano-cta-sub" id="piano-cta-sub">专为钢琴曲打造的纯净视觉页面。音符 C=深蓝、D=天青、E=翠绿、F=暖金、G=琥珀、A=炽红、B=幽紫。发光丝带随指尖流转，和弦如繁花绽放，延音凝为消散的云烟。</p>
+  </div>
+  <button class="btn piano-btn" onclick="openPianoMode()" style="flex-shrink:0;padding:.6rem 1.2rem;font-size:.74rem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:13px;height:13px"><path d="M5 3l14 9-14 9V3z"/></svg>
+    <span id="btn-piano-cta">进入钢琴肖像</span>
+  </button>
+</div>
+
+<section class="philosophy">
+  <div><div class="phil-num">一</div><div class="phil-title" id="phil-title-1">低频 — 浮云雾霭层</div><p class="phil-body" id="phil-body-1">20–250Hz 的低音与节奏化为画面底部的流动雾霭。低音能量越充沛，云海越发磅礴：电音重低音催生漫天云浪，古典钢琴则留下轻盈呼吸般的微茫。深邃蓝调随低频悄然凝聚。</p></div>
+  <div><div class="phil-num">二</div><div class="phil-title" id="phil-title-2">中频 — 情感花瓣层</div><p class="phil-body" id="phil-body-2">300–3000Hz 的人声与主体旋律化为随风起舞的花瓣与丝绸曲线。动人的歌声带来饱满的色彩花瓣，急促的段落呈现为流线波纹。紫色梦幻、翠绿生机与金色喜悦皆交织于此层。</p></div>
+  <div><div class="phil-num">三</div><div class="phil-title" id="phil-title-3">高频 — 璀璨星光层</div><p class="phil-body" id="phil-body-3">高频打击乐、弦乐泛音与空气感散落为萤火虫般的微光粒子。金色、琥珀、橙红随高音能量瞬时绽放。轻盈的光点精准刻录下乐曲每一个触动心灵的瞬态。</p></div>
+</section>
+
+<div class="color-key">
+  <div class="color-key-title" id="color-key-title">情感色彩映射图谱</div>
+  <div class="color-key-grid">
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#0D1F4A"></div><span id="key-1">极夜蓝 — 绝望 · 极低频</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#1A3A6B"></div><span id="key-2">深海蓝 — 深度悲伤 · 低音</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#2E6DAE"></div><span id="key-3">钴蓝 — 忧郁思念 · 低中音</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#3D90C8"></div><span id="key-4">天青 — 沉静清冷 · 中低频</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#5B2D8E"></div><span id="key-5">深紫 — 神秘黑暗 · 暗夜</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#8E44AD"></div><span id="key-6">紫罗兰 — 梦境幻想</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#1A7A5C"></div><span id="key-7">深青 — 平静静止 · 中音</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#27AE60"></div><span id="key-8">翠绿 — 希望生长 · 旋律</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#D4A017"></div><span id="key-9">金色 — 喜悦温暖 · 高音</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#E8832A"></div><span id="key-10">琥珀橙 — 兴奋期待</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#E05820"></div><span id="key-11">橙红 — 高潮峰值</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#C0392B"></div><span id="key-12">深红 — 紧张戏剧</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#8B2020"></div><span id="key-13">暗血红 — 极度张力</span></div>
+    <div class="color-key-item"><div class="color-key-swatch" style="background:#D4E8F0"></div><span id="key-14">冰银 — 空灵 · 极高频</span></div>
+  </div>
+</div>
 </main>
-
 <footer>
   <span class="footer-logo">音響</span>
-  <span class="footer-note">No data is uploaded. All processing is local to your browser.</span>
+  <span class="footer-note" id="footer-note">本地音频解析，任何数据均不会上传至服务器。</span>
 </footer>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-//  ONKYO  —  Rendering Engine v4
-//  · Full-spectrum per-frequency colour (HSL wheel)
-//  · Permanent dual-canvas (paint never erased during play)
-//  · Timeline X-axis (left = start, right = end)
-//  · Robust audio pipeline (fresh AudioContext per file)
-// ═══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+//  ONKYO — 情绪生成引擎 Final v2
+//  Full i18n: zh / en / ja
+// ══════════════════════════════════════════════════
+let PX_PER_SEC=45;
+const CH=320,MIN_CW=900,EXTEND_BY=1800;
+let audioCtx=null,analyser=null,source=null;
+let micStream=null,audioEl=null,audioBuffer=null,bufferSource=null;
+let videoSource=null;
+let animId=null,isRunning=false,isMicMode=false,isVideoMode=false,isAudioBuffer=false;
+let startTime=0,pauseOffset=0,audioDuration=0;
+let frameCount=0,prevEnergy=0,lastBeatT=0;
+let currentStyle='emotion',currentLang='zh';
+let CW=MIN_CW,lastDrawX=0,maxContentX=0;
+const DRAW_INTERVAL=3;
+let micStartTime=null;
 
-// ── State ──────────────────────────────────────────────────
-let audioCtx  = null;
-let analyser  = null;
-let source    = null;
-let micStream = null;
-let audioEl   = null;          // current HTMLAudioElement
+const viewport=document.getElementById('canvas-viewport');
+const track=document.getElementById('canvas-track');
+const paintCanvas=document.getElementById('artCanvas');
+const pCtx=paintCanvas.getContext('2d');
 
-let animId      = null;
-let isRunning   = false;
-let isMicMode   = false;
-let frameCount  = 0;
-let prevEnergy  = 0;
-let lastBeatT   = 0;
-let hueWander   = 0;
-let timelineCursor = 0;        // 0–1, left→right across canvas
-let micStartTime   = 0;
-const MIC_SPAN     = 300;      // seconds treated as full mic canvas
-
-let currentStyle = 'ink';
-let emotionHistory = [];
-let currentEmotion = '';
-
-const EMOTIONS = {
-  low_calm:   ['stillness','reverie','solitude','quietude','dusk'],
-  low_tense:  ['melancholy','yearning','longing','sorrow','gravity'],
-  high_calm:  ['serenity','clarity','morning','release','breath'],
-  high_tense: ['elation','urgency','rapture','fervour','rise'],
+// ── i18n ──────────────────────────────
+const i18n={
+  zh:{
+    navHint:'声波流动 → 情感共振 → 视觉艺术',
+    heroEyebrow:'音律留形，声影相生',
+    heroTitle:'将旋律晕染成<br>一幅<em>情绪画卷。</em>',
+    heroSub:'音響（Onkyo）将音高、节奏与动态转化为温润舒缓的流体意象。褪去喧嚣与锐利，让音律在留白与色彩的层层交织中诗意流淌，构筑专属您的声音画幅。',
+    btnImport:'导入媒体',btnPlay:'播放',btnPause:'暂停',btnMic:'麦克风',
+    btnReset:'重置画布',btnExport:'保存 PNG',btnPiano:'钢琴肖像模式',
+    styleLabel:'艺术风格',styleEmotion:'情感共鸣',styleInk:'古典水墨',styleNeon:'赛博霓虹',stylePastel:'治愈柔粉',
+    densityLabel:'笔触流速 (绘制密度)',
+    uploadText:'<strong>导入音频或视频文件</strong><br>或点击“麦克风”启动实时声音捕捉<br><span style="opacity:.55">支持格式: mp3 · wav · ogg · flac · mp4</span>',
+    statusReady:'就绪 — 请导入媒体，或开启麦克风开始绘制',
+    statusPaused:'已暂停绘制',statusPainting:'画卷晕染中…',
+    statusMicOff:'麦克风捕获已关闭',statusMicOn:'正在实时捕捉声波 — 请开始演奏或歌唱…',
+    statusMicDenied:'无法获取麦克风权限 — 请检查浏览器安全设置',
+    statusLoading:'媒体文件载入中 — ',statusVideoPlaying:'视频实时渲染中 — ',
+    statusDecoding:'正在解析并解码音频 — ',statusReadFailed:'文件读取失败: ',
+    statusDecodeFailed:'音频解码失败 (请检查文件是否损坏或格式是否支持): ',
+    statusMusicPlaying:'旋律流淌中 — 正在生成情绪画卷: ',
+    statusComplete:'绘制完成 — 专属情感画卷已就绪，可保存收藏',
+    philTitle1:'低频 — 浮云雾霭层',philBody1:'20–250Hz 的低音与节奏化为画面底部的流动雾霭。低音能量越充沛，云海越发磅礴：电音重低音催生漫天云浪，古典钢琴则留下轻盈呼吸般的微茫。深邃蓝调随低频悄然凝聚。',
+    philTitle2:'中频 — 情感花瓣层',philBody2:'300–3000Hz 的人声与主体旋律化为随风起舞的花瓣与丝绸曲线。动人的歌声带来饱满的色彩花瓣，急促的段落呈现为流线波纹。紫色梦幻、翠绿生机与金色喜悦皆交织于此层。',
+    philTitle3:'高频 — 璀璨星光层',philBody3:'高频打击乐、弦乐泛音与空气感散落为萤火虫般的微光粒子。金色、琥珀、橙红随高音能量瞬时绽放。轻盈的光点精准刻录下乐曲每一个触动心灵的瞬态。',
+    colorKeyTitle:'情感色彩映射图谱',
+    pianoCTAEyebrow:'专属空间',pianoCTATitle:'钢琴肖像模式 — Piano Portrait',
+    pianoCTASub:'专为钢琴曲打造的纯净视觉页面。音符 C=深蓝、D=天青、E=翠绿、F=暖金、G=琥珀、A=炽红、B=幽紫。发光丝带随指尖流转，和弦如繁花绽放，延音凝为消散的云烟。',
+    btnPianoCTA:'进入钢琴肖像',
+    keys:['极夜蓝 — 绝望 · 极低频','深海蓝 — 深度悲伤 · 低音','钴蓝 — 忧郁思念 · 低中音','天青 — 沉静清冷 · 中低频','深紫 — 神秘黑暗 · 暗夜','紫罗兰 — 梦境幻想','深青 — 平静静止 · 中音','翠绿 — 希望生长 · 旋律','金色 — 喜悦温暖 · 高音','琥珀橙 — 兴奋期待','橙红 — 高潮峰值','深红 — 紧张戏剧','暗血红 — 极度张力','冰银 — 空灵 · 极高频'],
+    footerNote:'本地解析，安全私密。任何媒体数据均不会上传至云端。'
+  },
+  en:{
+    navHint:'Sound Waves → Emotional Resonance → Visual Art',
+    heroEyebrow:'Giving shape to sound, giving color to soul',
+    heroTitle:'Washes of melody,<br>painted into an <em>emotional canvas.</em>',
+    heroSub:'Onkyo translates pitch, rhythm, and dynamics into warm, organic fluid visuals. By stripping away digital sharpness, it lets your music drift poetically through layered color and soft breathing spaces.',
+    btnImport:'Import Media',btnPlay:'Play',btnPause:'Pause',btnMic:'Microphone',
+    btnReset:'Reset Canvas',btnExport:'Save PNG',btnPiano:'Piano Portrait Mode',
+    styleLabel:'Artistic Style',styleEmotion:'Emotional Resonance',styleInk:'Classical Ink',styleNeon:'Cyber Neon',stylePastel:'Healing Pastel',
+    densityLabel:'Stroke Velocity (Drawing Density)',
+    uploadText:'<strong>Import an audio or video file</strong><br>or tap Microphone to capture sounds in real-time<br><span style="opacity:.55">Supported: mp3 · wav · ogg · flac · mp4</span>',
+    statusReady:'Ready — Import a media file or enable Microphone to start painting',
+    statusPaused:'Painting paused',statusPainting:'Weaving your music into art…',
+    statusMicOff:'Microphone disabled',statusMicOn:'Capturing real-time audio — play an instrument or start singing…',
+    statusMicDenied:'Microphone access denied — please check browser security settings',
+    statusLoading:'Loading media file — ',statusVideoPlaying:'Rendering live video stream — ',
+    statusDecoding:'Analyzing and decoding audio track — ',statusReadFailed:'File read failed: ',
+    statusDecodeFailed:'Audio decoding failed (unsupported format or corrupted file?): ',
+    statusMusicPlaying:'Melody unfolding — painting emotional currents: ',
+    statusComplete:'Painting complete — your custom emotional canvas is ready to save',
+    philTitle1:'Bass — Ambient Cloud Stratum',philBody1:'Low-end frequencies and beats (20–250Hz) dissolve into sweeping fluid clouds at the base. High-energy bass spawns majestic cloudwaves, while classical piano leaves a delicate, breathing haze. Deep cobalt blues pool under heavy beats.',
+    philTitle2:'Mid — Emotional Petal Stratum',philBody2:'Vocals and lead melodies (300–3000Hz) blossom as floating petals and silk ribbons. Heartfelt singing breathes rich floral layers onto the canvas, while rapid rhythms form sleek ripple trails. Dreams of violet, vibrant greens, and golden joy converge here.',
+    philTitle3:'High — Shimmering Stardust Stratum',philBody3:'Cymbals, high strings, and airiness scatter above as firefly-like sparkles. Gold, amber, and orange-red flare during emotional peaks. These lightweight particles map out every delicate, transient moment of your music.',
+    colorKeyTitle:'Emotional Color Spectrum Key',
+    pianoCTAEyebrow:'Exclusive Space',pianoCTATitle:'Piano Portrait Mode',
+    pianoCTASub:'A tailored space designed for piano compositions. Maps keys to visual signatures: C=Deep Blue, D=Cyan, E=Emerald, F=Warm Gold, G=Amber, A=Crimson, B=Amethyst. Watch chords bloom into flowers and sustained notes dissolve into serene mist.',
+    btnPianoCTA:'Open Piano Portrait',
+    keys:['Midnight Blue — Despair · Sub-bass','Deep Blue — Sadness · Bass','Cobalt — Yearning · Low-mid','Sky Blue — Serenity · Mid Frequency','Deep Purple — Mystery · Shadows','Violet — Dream · Fantasy','Deep Teal — Tranquility · Stillness','Emerald — Hope · Vitality','Gold — Joy · Warmth','Amber Orange — Excitement · Anticipation','Orange Red — Climax · Passion','Crimson — Tension · Drama','Dark Red — High Tension · Conflict','Ice Silver — Ereal · Air'],
+    footerNote:'All processing is performed locally on your device. Your data is never uploaded.'
+  },
+  ja:{
+    navHint:'音波 → 感情共鳴 → 視覚芸術',
+    heroEyebrow:'音に形を与え、心に色を宿す',
+    heroTitle:'旋律を優しく暈し、<br>一幅の<em>感情絵巻へ。</em>',
+    heroSub:'音響（Onkyo）は、音高、リズム、音域 stream のダイナミクスを温かみのある美しくなめらかな流体ビジュアルへと昇華させます。デジタルの鋭さや喧騒を削ぎ落とし、余白と重なり合う色彩が織りなす詩的な世界へ誘います。',
+    btnImport:'ファイルを読み込む',btnPlay:'再生',btnPause:'一时停止',btnMic:'マイク入力',
+    btnReset:'キャンバスをリセット',btnExport:'PNGを保存',btnPiano:'ピアノ肖像',
+    styleLabel:'表現スタイル',styleEmotion:'感情共鳴',styleInk:'古典水墨',styleNeon:'サイバーネオン',stylePastel:'ヒーリングパステル',
+    densityLabel:'筆の流速（描画密度）',
+    uploadText:'<strong>音声または動画ファイルを読み込む</strong><br>または「マイク」からリアルタイムに音をキャプチャ<br><span style="opacity:.55">対応形式: mp3 · wav · ogg · flac · mp4</span>',
+    statusReady:'準備完了 — メディアファイルを読み込むか、マイクを有効にしてください',
+    statusPaused:'描画を一時停止しました',statusPainting:'旋律を絵画へ紡い演奏中…',
+    statusMicOff:'マイク入力が無効になりました',statusMicOn:'マイク入力をリアルタイム測定中 — 演奏や歌を始めてください…',
+    statusMicDenied:'マイクへのアクセスが拒否されました — ブラウザの権限設定を確認してください',
+    statusLoading:'ファイルを読み込み中 — ',statusVideoPlaying:'動画を再生しながらリアルタイム描画中 — ',
+    statusDecoding:'オーディオトラックを解析・デコード中 — ',statusReadFailed:'ファイルの読み込みに失敗しました: ',
+    statusDecodeFailed:'オーディオのデコードに失敗しました（未対応の形式、またはファイル破損の可能性があります）: ',
+    statusMusicPlaying:'音楽再生中 — 感情の潮流を描画しています: ',
+    statusComplete:'描画完了 — あなただけの美しい感情絵巻が完成しました。保存できます',
+    philTitle1:'低音 — 星雲の霧靄レイヤー',philBody1:'20–250Hzの豊かな低音与ビートが、キャンバス底面を漂于美しく流動的な霧になります。重低音のエネルギーが高まると壮大な雲海が広がり、クラシックピアノでは静かに息づく微かな霧が残ります。',
+    philTitle2:'中音 — 感情の花びらレイヤー',philBody2:'300–3000Hzのボーカルや主旋律は、風に舞于花びらやしなやかな絹 of 曲線となって描かれます。情熱的な歌声は色彩豊かな花びらを散らし、アップテンポな旋律は滑らかな流線波纹を描きます。',
+    philTitle3:'高音 — 瞬く星屑のレイヤー',philBody3:'高音のシンバル、弦楽器の倍音、空気感は、夜空を舞う蛍のような光 of 粒子として散りばめられます。ゴールド、アンバー、オレンジレッドが、曲の高揚感やエモーショナルな瞬間に輝きを添えます。',
+    colorKeyTitle:'感情色彩スペクトル解説',
+    pianoCTAEyebrow:'専用スペース',pianoCTATitle:'ピアノ肖像モード',
+    pianoCTASub:'ピアノ曲専用に設計された美しい描画ページ。C=深藍、D=天青、E=翠緑、F=暖金、G=琥珀、A=赤、B=紫。指先から溢れる发光リボン、和音の花、ペダルの残響による静かな霧を完全に再現します。',
+    btnPianoCTA:'ピアノ肖像を開く',
+    keys:['極夜ブルー — 絶望 · 超低音','深海ブルー — 哀愁 · 低音','コバルト — 思慕 · 中低音','スカイブルー — 静寂 · 中音域','ディープパープル — 神秘 · 暗夜','バイオレット — 夢想 · 幻想','ティール — 静謐 · 旋律','グリーン — 希望 · 生気','ゴールド — 歓喜 · 温もり','アンバーオレンジ — 高揚 · 期待','オレンジレッド — 絶頂 · 情熱','クリムゾン — 緊張 · ドラマ','ダークレッド — 極限の緊迫','アイスシルバー — 空霊 · 極高音'],
+    footerNote:'解析処理はすべてお使い of デバイス上で安全に行われます。データが外部へ送信されることはありません。'
+  }
 };
 
-// ── Canvas setup ───────────────────────────────────────────
-const paintCanvas = document.getElementById('artCanvas');
-const pCtx = paintCanvas.getContext('2d');
+let currentStatusKey='statusReady',currentStatusExtra='';
 
-// Glow overlay — ephemeral, cleared each frame
-const glowCanvas = document.createElement('canvas');
-glowCanvas.style.cssText =
-  'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
-document.getElementById('canvas-container').appendChild(glowCanvas);
-const gCtx = glowCanvas.getContext('2d');
-
-let W = 0, H = 0;
-
-function resizeCanvases() {
-  const dpr  = window.devicePixelRatio || 1;
-  const rect = document.getElementById('canvas-container').getBoundingClientRect();
-  W = rect.width;
-  H = rect.height;
-  for (const c of [paintCanvas, glowCanvas]) {
-    c.width  = Math.round(W * dpr);
-    c.height = Math.round(H * dpr);
-    c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  paintBg();
+function setLanguage(lang){
+  if(!i18n[lang])return;
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('lang-'+lang).classList.add('active');
+  const t=i18n[lang];
+  document.getElementById('nav-hint').textContent=t.navHint;
+  document.getElementById('hero-eyebrow').textContent=t.heroEyebrow;
+  document.getElementById('hero-title').innerHTML=t.heroTitle;
+  document.getElementById('hero-sub').textContent=t.heroSub;
+  document.getElementById('btn-import').textContent=t.btnImport;
+  document.getElementById('btn-mic').textContent=t.btnMic;
+  document.getElementById('btn-reset').textContent=t.btnReset;
+  document.getElementById('btn-export').textContent=t.btnExport;
+  document.getElementById('btn-piano').textContent=t.btnPiano;
+  document.getElementById('style-label').textContent=t.styleLabel;
+  document.getElementById('speed-label').textContent=t.densityLabel;
+  document.getElementById('style-emotion').textContent=t.styleEmotion;
+  document.getElementById('style-ink').textContent=t.styleInk;
+  document.getElementById('style-neon').textContent=t.styleNeon;
+  document.getElementById('style-pastel').textContent=t.stylePastel;
+  document.getElementById('upload-text').innerHTML=t.uploadText;
+  document.getElementById('phil-title-1').textContent=t.philTitle1;
+  document.getElementById('phil-body-1').textContent=t.philBody1;
+  document.getElementById('phil-title-2').textContent=t.philTitle2;
+  document.getElementById('phil-body-2').textContent=t.philBody2;
+  document.getElementById('phil-title-3').textContent=t.philTitle3;
+  document.getElementById('phil-body-3').textContent=t.philBody3;
+  document.getElementById('color-key-title').textContent=t.colorKeyTitle;
+  document.getElementById('piano-cta-eyebrow').textContent=t.pianoCTAEyebrow;
+  document.getElementById('piano-cta-title').textContent=t.pianoCTATitle;
+  document.getElementById('piano-cta-sub').textContent=t.pianoCTASub;
+  document.getElementById('btn-piano-cta').textContent=t.btnPianoCTA;
+  t.keys.forEach((k,i)=>{ const el=document.getElementById('key-'+(i+1)); if(el)el.textContent=k; });
+  document.getElementById('footer-note').textContent=t.footerNote;
+  document.getElementById('play-label').textContent=isRunning?t.btnPause:t.btnPlay;
+  setStatusByKey(currentStatusKey,currentStatusExtra);
 }
-window.addEventListener('resize', resizeCanvases);
 
-// ── Style definitions ──────────────────────────────────────
-const STYLES = {
-  ink:   { bg:'#0B0B0E', hueShift:220, sat:0.55, inkMode:true  },
-  bloom: { bg:'#0A080D', hueShift:300, sat:1.00, inkMode:false },
-  tide:  { bg:'#050A10', hueShift:195, sat:0.90, inkMode:false },
-  ember: { bg:'#0E0600', hueShift:0,   sat:1.00, inkMode:false },
+function setStatusByKey(key,extra){
+  extra=extra||'';
+  currentStatusKey=key;currentStatusExtra=extra;
+  document.getElementById('status-text').textContent=(i18n[currentLang][key]||key)+extra;
+}
+
+// ── Audio context ──────────────────────
+function initAudioContext(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(!analyser){
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=4096;
+    analyser.smoothingTimeConstant=0.82;
+  }
+}
+
+// ── Canvas ─────────────────────────────
+const STYLE_BG={emotion:'#04040E',ink:'#F5F4EF',neon:'#020206',pastel:'#FAF7F0'};
+
+function applyCanvasSize(dpr){
+  dpr=dpr||(window.devicePixelRatio||1);
+  if (CW * dpr > 8192) {
+    dpr = Math.min(dpr, 8192 / CW);
+  }
+  paintCanvas.width=CW*dpr;paintCanvas.height=CH*dpr;
+  paintCanvas.style.width=CW+'px';paintCanvas.style.height=CH+'px';
+  track.style.width=CW+'px';
+  pCtx.setTransform(dpr,0,0,dpr,0,0);
+}
+function initCanvas(dur){CW=Math.max(MIN_CW,Math.ceil((dur||180)*PX_PER_SEC)+400);applyCanvasSize();}
+function paintBg(fx,tx){fx=fx||0;tx=tx||CW;pCtx.fillStyle=STYLE_BG[currentStyle];pCtx.fillRect(fx,0,tx-fx,CH);}
+function clearCanvas(){paintBg();}
+function extendCanvas(){
+  const dpr=window.devicePixelRatio||1;
+  const tmp=document.createElement('canvas');tmp.width=paintCanvas.width;tmp.height=paintCanvas.height;
+  tmp.getContext('2d').drawImage(paintCanvas,0,0);
+  const old=CW;CW+=EXTEND_BY;applyCanvasSize(dpr);
+  pCtx.drawImage(tmp,0,0,tmp.width/dpr,tmp.height/dpr);
+  paintBg(old,CW);
+}
+
+// ── 16-color emotion system ────────────
+const EC={
+  midnight:[13,31,74],deep_blue:[26,58,107],cobalt:[46,109,174],sky:[61,144,200],
+  deep_purple:[91,45,142],violet:[142,68,173],
+  teal:[26,122,92],green:[39,174,96],
+  gold:[212,160,23],amber:[232,131,42],orange_red:[224,88,32],crimson:[192,57,43],dark_red:[139,32,32],
+  ice:[212,232,240]
 };
 
-function paintBg() {
-  const def = STYLES[currentStyle];
-  pCtx.fillStyle = def.bg;
-  pCtx.fillRect(0, 0, W, H);
-  // Left-to-right horizontal tint (darkness fades as timeline progresses)
-  const hg = pCtx.createLinearGradient(0, 0, W, 0);
-  hg.addColorStop(0, 'rgba(0,0,0,0.22)');
-  hg.addColorStop(1, 'rgba(0,0,0,0.00)');
-  pCtx.fillStyle = hg;
-  pCtx.fillRect(0, 0, W, H);
-  // Corner vignette
-  const vg = pCtx.createRadialGradient(W*.5,H*.5,H*.08, W*.5,H*.5,H*.9);
-  vg.addColorStop(0, 'rgba(0,0,0,0)');
-  vg.addColorStop(1, 'rgba(0,0,0,0.52)');
-  pCtx.fillStyle = vg;
-  pCtx.fillRect(0, 0, W, H);
+function lerp3(a,b,t){t=Math.max(0,Math.min(1,t));return[a[0]+(b[0]-a[0])*t|0,a[1]+(b[1]-a[1])*t|0,a[2]+(b[2]-a[2])*t|0];}
+
+function pitchToRGB(r){
+  const cols=[EC.midnight,EC.deep_blue,EC.cobalt,EC.sky,EC.deep_purple,EC.violet,EC.teal,EC.green,EC.gold,EC.amber,EC.orange_red,EC.crimson,EC.dark_red];
+  const n=cols.length-1,p=Math.max(0,Math.min(1,r))*n,i=Math.min(n-1,Math.floor(p));
+  return lerp3(cols[i],cols[i+1],p-i);
 }
 
-// ── Colour engine ──────────────────────────────────────────
-// Every freq bin gets its own hue across 300° of the colour wheel.
-// Volume drives lightness + alpha. Style shifts the anchor hue.
-function freqToHue(nf) {
-  const def = STYLES[currentStyle];
-  const sweep = Math.pow(nf, 0.5) * 300;   // 0 → 300 deg
-  return (def.hueShift + sweep + hueWander) % 360;
+// 补充回之前丢失的 emotionToRGB 函数，使情感共鸣和花瓣颜色顺利晕染，主画板正常工作
+function emotionToRGB(e,v){
+  if(e>0.38&&v<0.7)return EC.dark_red;
+  if(e>0.32&&v<0.9)return EC.crimson;
+  if(e>0.30&&v>1.2)return EC.orange_red;
+  if(e>0.22&&v>1.4)return EC.amber;
+  if(e>0.18&&v>1.0)return EC.gold;
+  if(e>0.10&&v>1.3)return EC.green;
+  if(e>0.10&&v>0.7)return EC.teal;
+  if(e>0.08&&v<0.6)return EC.deep_purple;
+  if(e>0.06&&v<0.8)return EC.cobalt;
+  if(e<=0.05&&v>1.1)return EC.violet;
+  if(e<=0.05&&v>0.8)return EC.sky;
+  if(e<=0.04)return EC.deep_blue;
+  return EC.violet;
 }
 
-function getColour(nf, vol, energy) {
-  const def = STYLES[currentStyle];
-  const v   = vol / 255;
-  const hue = freqToHue(nf);
+function applyStyleRGB(rgb){
+  if(currentStyle==='ink'){const g=rgb[0]*.299+rgb[1]*.587+rgb[2]*.114|0;return[g*.8+rgb[0]*.2|0,g*.8+rgb[1]*.2|0,g*.8+rgb[2]*.2|0];}
+  if(currentStyle==='neon')return[Math.min(255,rgb[0]*1.15+20)|0,Math.min(255,rgb[1]*1.15+20)|0,Math.min(255,rgb[2]*1.15+20)|0];
+  if(currentStyle==='pastel')return[200+rgb[0]*.21|0,200+rgb[1]*.21|0,200+rgb[2]*.21|0];
+  return rgb;
+}
+function rgba(rgb,a){const c=applyStyleRGB(rgb);return'rgba('+c[0]+','+c[1]+','+c[2]+','+Math.min(1,Math.max(0,a))+')';}
 
-  if (def.inkMode) {
-    // Ink: low sat on bass, colour accent on mids/highs
-    const sat = nf > 0.15
-      ? Math.round(25 + v * 60 * def.sat)
-      : Math.round(8  + v * 18);
-    const lit = Math.round(7 + v * 58 + energy * 10);
-    return `hsla(${Math.round(hue)},${sat}%,${lit}%,${0.07 + v * 0.82})`;
-  } else {
-    const sat = Math.round(50 + v * 45 * def.sat);
-    const lit = Math.round(12 + v * 52 + energy * 8);
-    return `hsla(${Math.round(hue)},${sat}%,${lit}%,${0.07 + v * 0.82})`;
-  }
+// ── Band analysis ───────────────────────
+function analyzeBands(data,len){
+  function seg(s,e){const a=Math.floor(len*s),b=Math.max(a+1,Math.floor(len*e));let sm=0;for(let i=a;i<b;i++)sm+=data[i]||0;return(sm/(b-a))/255;}
+  const subBass=seg(0.00,0.03),bass=seg(0.03,0.10),lowMid=seg(0.10,0.22),mid=seg(0.22,0.45),upperMid=seg(0.45,0.72),high=seg(0.72,1.00);
+  const total=(subBass+bass+lowMid+mid+upperMid+high)/6;
+  const valence=(upperMid*.55+high*.45)/(subBass*.55+bass*.45+0.001);
+  return{subBass,bass,lowMid,mid,upperMid,high,total,valence};
 }
 
-function getGlow(nf, energy) {
-  const hue = freqToHue(nf);
-  return `hsla(${Math.round(hue)},80%,62%,${0.03 + energy * 0.09})`;
+function currentX(){
+  if(isMicMode&&micStartTime)return((Date.now()-micStartTime)/1000)*PX_PER_SEC;
+  let t=0;
+  if(isAudioBuffer)t=isRunning?(audioCtx.currentTime-startTime+pauseOffset):pauseOffset;
+  else if(audioEl)t=audioEl.currentTime||0;
+  return t*PX_PER_SEC;
 }
 
-// ── Shape library ──────────────────────────────────────────
-const SHAPE_SETS = {
-  ink:   ['stroke','splat','drip','thread','stroke','drip'],
-  bloom: ['petal','arc','scatter','petal','arc','petal'],
-  tide:  ['wave','ripple','foam','wave','thread','ripple'],
-  ember: ['splat','flare','spark','splat','flare','spark'],
-};
+// ── Blend helpers ───────────────────────
+function setBlend(e){
+  pCtx.shadowBlur=0;
+  pCtx.globalCompositeOperation=(currentStyle==='ink')?'multiply':'screen';
+  if(currentStyle==='neon')pCtx.shadowBlur=8+e*20;
+}
+function resetBlend(){pCtx.globalCompositeOperation='source-over';pCtx.shadowBlur=0;pCtx.globalAlpha=1;}
 
-function drawMark(c, x, y, size, colour, shape, angle) {
-  c.save();
-  c.translate(x, y);
-  c.rotate(angle);
-  c.fillStyle = colour;
-  c.strokeStyle = colour;
-
-  switch (shape) {
-    case 'stroke':
-      c.beginPath();
-      c.ellipse(0, 0, size*(2.0+Math.random()*1.8), size*(0.17+Math.random()*0.2), 0, 0, Math.PI*2);
-      c.fill(); break;
-
-    case 'splat': {
-      const pts = 5 + Math.floor(Math.random()*5);
-      c.beginPath();
-      for (let i=0;i<pts;i++){
-        const a=(i/pts)*Math.PI*2, r=size*(0.5+Math.random());
-        i===0 ? c.moveTo(Math.cos(a)*r,Math.sin(a)*r)
-              : c.lineTo(Math.cos(a)*r,Math.sin(a)*r);
-      }
-      c.closePath(); c.fill(); break;
-    }
-    case 'drip':
-      c.beginPath();
-      c.ellipse(0,0,size*0.24,size*(1.3+Math.random()*0.9),0,0,Math.PI*2);
-      c.fill(); break;
-
-    case 'thread':
-      c.lineWidth = 0.5 + Math.random();
-      c.lineCap = 'round';
-      c.beginPath();
-      c.moveTo(0,-size*2.2);
-      c.bezierCurveTo(size*(Math.random()-.5)*2.5,-size,
-                      size*(Math.random()-.5)*2.5, size, 0,size*2.2);
-      c.stroke(); break;
-
-    case 'petal':
-      c.beginPath();
-      c.ellipse(0,-size*.4,size*.48,size,0,0,Math.PI*2);
-      c.fill(); break;
-
-    case 'arc':
-      c.lineWidth = size*(0.28+Math.random()*0.28);
-      c.lineCap = 'round';
-      c.beginPath();
-      c.arc(0,0,size*(.9+Math.random()*.6),
-            -(0.22+Math.random()*.65)*Math.PI/1,
-             (0.22+Math.random()*.65)*Math.PI/1);
-      c.stroke(); break;
-
-    case 'scatter':
-      for(let i=0;i<5;i++){
-        c.beginPath();
-        c.arc((Math.random()-.5)*size*3.5,(Math.random()-.5)*size*3.5,
-              size*(.15+Math.random()*.25),0,Math.PI*2);
-        c.fill();
-      } break;
-
-    case 'wave':
-      c.lineWidth = size*(.22+Math.random()*.18);
-      c.lineCap = 'round';
-      c.beginPath();
-      c.moveTo(-size*2.8,0);
-      c.quadraticCurveTo(-size*1.4,-size*(.5+Math.random()*.9),0,0);
-      c.quadraticCurveTo( size*1.4, size*(.5+Math.random()*.9),size*2.8,0);
-      c.stroke(); break;
-
-    case 'ripple':
-      c.lineWidth=.5;
-      for(let r=0;r<3;r++){
-        c.globalAlpha *= (.65-r*.18);
-        c.beginPath(); c.arc(0,0,size*(.45+r*.65),0,Math.PI*2); c.stroke();
-      } break;
-
-    case 'foam':
-      c.beginPath();
-      c.arc(0,0,size*(.22+Math.random()*.35),0,Math.PI*2);
-      c.fill(); break;
-
-    case 'flare':
-      c.beginPath();
-      c.moveTo(0,-size*2.8);
-      c.lineTo(size*.3,size*.5);
-      c.lineTo(-size*.3,size*.5);
-      c.closePath(); c.fill(); break;
-
-    case 'spark':
-      c.lineWidth=.6+Math.random()*.8; c.lineCap='round';
-      for(let i=0;i<3+Math.floor(Math.random()*4);i++){
-        const a=Math.random()*Math.PI*2;
-        c.beginPath(); c.moveTo(0,0);
-        c.lineTo(Math.cos(a)*size*(1.3+Math.random()*1.5),
-                 Math.sin(a)*size*(1.3+Math.random()*1.5));
-        c.stroke();
-      } break;
-
-    default:
-      c.beginPath(); c.arc(0,0,size,0,Math.PI*2); c.fill();
+// ── L1: Foundation cloud ────────────────
+function drawCloud(cx,B){
+  const e=Math.max(B.subBass,B.bass)*1.4;if(e<0.04)return;
+  setBlend(e);
+  const col=pitchToRGB(B.subBass>B.bass?0.05:0.12+Math.random()*.08);
+  const y=CH*(0.62+Math.random()*.32),rx=28+e*110,ry=10+e*36;
+  const grad=pCtx.createRadialGradient(cx,y,ry*.1,cx,y,rx);
+  grad.addColorStop(0,rgba(col,.25+e*.45));grad.addColorStop(.5,rgba(col,.1+e*.18));grad.addColorStop(1,rgba(col,0));
+  pCtx.fillStyle=grad;pCtx.save();pCtx.translate(cx,y);pCtx.scale(1,ry/rx);
+  pCtx.beginPath();pCtx.arc(0,0,rx,0,Math.PI*2);pCtx.fill();pCtx.restore();
+  if(e>.12){
+    const y2=CH*(.55+Math.random()*.3),rx2=14+e*60;
+    const g2=pCtx.createRadialGradient(cx,y2,0,cx,y2,rx2);
+    g2.addColorStop(0,rgba(col,.16+e*.24));g2.addColorStop(1,rgba(col,0));
+    pCtx.fillStyle=g2;pCtx.beginPath();pCtx.ellipse(cx+(Math.random()-.5)*22,y2,rx2,rx2*.38,0,0,Math.PI*2);pCtx.fill();
   }
-  c.restore();
+  resetBlend();
 }
 
-// ── Render frame ───────────────────────────────────────────
-function renderFrame(dataArray) {
-  const bufLen = analyser.frequencyBinCount;
-  const now    = Date.now();
-
-  // Energy
-  let totalE=0, bassE=0, highE=0;
-  for(let i=0;i<bufLen;i++){
-    const v=dataArray[i]; totalE+=v;
-    const f=(i/bufLen)*(audioCtx.sampleRate/2);
-    if(f<300) bassE+=v; else if(f>4000) highE+=v;
+// ── L2: Emotion petals ──────────────────
+function drawPetal(cx,B){
+  const e=Math.max(B.lowMid,B.mid);if(e<0.04)return;
+  setBlend(e);
+  const col=emotionToRGB(e,B.valence);
+  const y=CH*(.15+Math.random()*.70),w=5+e*18,h=12+e*52,angle=(Math.random()-.5)*Math.PI*1.4;
+  const grad=pCtx.createLinearGradient(0,-h/2,0,h/2);
+  grad.addColorStop(0,rgba(col,.18+e*.50));grad.addColorStop(.45,rgba(col,.25+e*.38));grad.addColorStop(1,rgba(col,0));
+  pCtx.fillStyle=grad;pCtx.save();pCtx.translate(cx+(Math.random()-.5)*8,y);pCtx.rotate(angle);
+  pCtx.beginPath();pCtx.moveTo(0,-h/2);pCtx.bezierCurveTo(w/2,-h/4,w/2,h/4,0,h/2);pCtx.bezierCurveTo(-w/2,h/4,-w/2,-h/4,0,-h/2);pCtx.closePath();pCtx.fill();
+  if(Math.random()>.5){pCtx.strokeStyle=rgba(col,.1+e*.16);pCtx.lineWidth=.5+e*.8;pCtx.beginPath();pCtx.moveTo(0,-h/2);pCtx.lineTo(0,h/2);pCtx.stroke();}
+  pCtx.restore();
+  if(e>.07&&Math.random()>.5){
+    const rx=8+e*32,ay=CH*(.2+Math.random()*.58);
+    pCtx.strokeStyle=rgba(col,.1+e*.22);pCtx.lineWidth=.8+e*2;pCtx.lineCap='round';
+    pCtx.beginPath();pCtx.moveTo(cx-rx,ay);pCtx.quadraticCurveTo(cx,ay+(B.valence-1)*CH*.1,cx+rx,ay+(Math.random()-.5)*10);pCtx.stroke();
   }
-  const avgE   = totalE / bufLen;
-  const energy = avgE / 255;
-  const isBeat = avgE > prevEnergy*1.18 && avgE>20 && (now-lastBeatT)>190;
-  if(isBeat) lastBeatT = now;
-  prevEnergy = avgE*.76 + prevEnergy*.24;
+  resetBlend();
+}
 
-  hueWander = (hueWander + 0.12) % 360;
-
-  // Timeline cursor
-  if(audioEl && audioEl.duration){
-    timelineCursor = audioEl.currentTime / audioEl.duration;
-  } else if(isMicMode && micStartTime){
-    timelineCursor = Math.min((Date.now()-micStartTime)/1000/MIC_SPAN, 1);
+// ── L3: Melody ribbon ───────────────────
+function drawRibbon(cx,B){
+  const e=B.mid;if(e<0.05)return;
+  setBlend(e);
+  const col=pitchToRGB(.35+B.upperMid*.5+Math.sin(cx*.008)*.1);
+  const baseY=CH*(.28+B.lowMid*.4),amp=14+e*38,len=20+e*48;
+  pCtx.strokeStyle=rgba(col,.22+e*.50);pCtx.lineWidth=1.5+e*4.5;pCtx.lineCap='round';pCtx.lineJoin='round';
+  pCtx.beginPath();pCtx.moveTo(cx-len,baseY);pCtx.bezierCurveTo(cx-len*.4,baseY-amp,cx+len*.4,baseY+amp,cx+len,baseY+(Math.random()-.5)*8);pCtx.stroke();
+  if(currentStyle!=='ink'&&e>.1){
+    pCtx.strokeStyle=rgba(col,.05+e*.10);pCtx.lineWidth=4+e*12;
+    pCtx.beginPath();pCtx.moveTo(cx-len,baseY);pCtx.bezierCurveTo(cx-len*.4,baseY-amp,cx+len*.4,baseY+amp,cx+len,baseY);pCtx.stroke();
   }
-  const tc = 0.02 + timelineCursor * 0.96; // keep marks off hard edges
+  resetBlend();
+}
 
-  // Emotion
-  const normBass = bassE/(bufLen*.08*255+1);
-  const normHigh = highE/(bufLen*.6*255+1);
-  updateEmotion(energy, normHigh/(normBass+.01));
-
-  // Clear glow layer
-  gCtx.clearRect(0,0,W,H);
-
-  // Draw marks
-  const shapes   = SHAPE_SETS[currentStyle];
-  const bandCount = isBeat ? 110 : 60;
-  const step = Math.max(1, Math.floor(bufLen/bandCount));
-
-  for(let i=0;i<bufLen;i+=step){
-    const val = dataArray[i];
-    if(val < 4) continue;
-    const nf = i/bufLen;
-    const v  = val/255;
-
-    // X = timeline cursor + tiny jitter
-    const jX = (isBeat ? 0.16 : 0.09) + nf*0.06;
-    const cx = Math.max(2, Math.min(W-2, (tc+(Math.random()-.5)*jX*2)*W));
-
-    // Y = frequency band → vertical zone
-    let baseY, spreadY;
-    if     (nf<0.08) { baseY=0.74; spreadY=0.18; }  // sub-bass: bottom
-    else if(nf<0.20) { baseY=0.60; spreadY=0.28; }  // bass
-    else if(nf<0.45) { baseY=0.50; spreadY=0.38; }  // mid: full height
-    else if(nf<0.70) { baseY=0.36; spreadY=0.30; }  // upper-mid
-    else             { baseY=0.20; spreadY=0.26; }  // air: top
-
-    const bp = isBeat ? 1.4 : 1.0;
-    const cy = (baseY + (Math.random()-.5)*spreadY*bp) * H;
-
-    const size   = (1.0 + v*(isBeat?20:12)) * (0.6+nf*0.7);
-    const colour = getColour(nf, val, energy);
-    const shape  = shapes[Math.floor(Math.random()*shapes.length)];
-    const angle  = (Math.random()-.5)*Math.PI*(nf<0.2 ? 0.4 : 1.6);
-
-    drawMark(pCtx, cx, cy, size, colour, shape, angle);
-
-    // Glow for loud marks
-    if(v > 0.38){
-      const gr = gCtx.createRadialGradient(cx,cy,0,cx,cy,size*4.5);
-      gr.addColorStop(0, getGlow(nf, energy));
-      gr.addColorStop(1, 'transparent');
-      gCtx.fillStyle = gr;
-      gCtx.beginPath();
-      gCtx.arc(cx, cy, size*4.5, 0, Math.PI*2);
-      gCtx.fill();
-    }
+// ── L4: Spark particles ─────────────────
+function drawSparks(cx,B){
+  const e=Math.max(B.high,B.upperMid*.75);if(e<0.025)return;
+  setBlend(e);
+  const col=e>.2?EC.orange_red:e>.12?EC.amber:e>.06?EC.gold:EC.ice;
+  const count=Math.ceil(2+e*12);
+  for(let i=0;i<count;i++){
+    const px=cx+(Math.random()-.5)*(14+e*45),py=CH*(.02+Math.random()*.5),sz=.8+e*3.5*Math.random(),al=.18+e*.6*(0.5+Math.random()*.5);
+    const g=pCtx.createRadialGradient(px,py,0,px,py,sz*2.5);
+    g.addColorStop(0,'rgba(255,255,255,'+Math.min(1,al*1.4)+')');g.addColorStop(.3,rgba(col,al));g.addColorStop(1,rgba(col,0));
+    pCtx.fillStyle=g;pCtx.beginPath();pCtx.arc(px,py,sz*2.5,0,Math.PI*2);pCtx.fill();
   }
-
-  // Beat burst at cursor
-  if(isBeat){
-    const bx = tc*W, by = H*(.3+Math.random()*.4);
-    const br = H*(.09+energy*.20);
-    const bg2 = pCtx.createRadialGradient(bx,by,0,bx,by,br);
-    bg2.addColorStop(0,`hsla(${Math.round(freqToHue(.35))},70%,60%,${.05+energy*.08})`);
-    bg2.addColorStop(1,'transparent');
-    pCtx.fillStyle=bg2;
-    pCtx.beginPath(); pCtx.arc(bx,by,br,0,Math.PI*2); pCtx.fill();
+  if(B.high>.08&&Math.random()>.6){
+    pCtx.strokeStyle=rgba(EC.ice,.07+B.high*.16);pCtx.lineWidth=.4+B.high*.6;
+    const ty=CH*(.04+Math.random()*.26),tl=8+B.high*26;
+    pCtx.beginPath();pCtx.moveTo(cx-tl/2,ty);pCtx.lineTo(cx+tl/2,ty+(Math.random()-.5)*4);pCtx.stroke();
   }
+  resetBlend();
+}
 
-  // Faint cursor line
-  gCtx.strokeStyle='rgba(255,255,255,0.035)';
-  gCtx.lineWidth=1;
-  gCtx.beginPath(); gCtx.moveTo(tc*W,0); gCtx.lineTo(tc*W,H); gCtx.stroke();
+// ── Beat bloom ──────────────────────────
+function drawBloom(cx,B){
+  setBlend(B.total);
+  const col=emotionToRGB(B.total,B.valence),cy=CH*(.22+B.valence*.08+Math.random()*.38);
+  const radius=10+B.total*Math.min(CH*.26,52),petals=Math.ceil(5+B.total*11);
+  for(let i=0;i<petals;i++){
+    const angle=(i/petals)*Math.PI*2,len=radius*(.45+Math.random()*.62);
+    pCtx.strokeStyle=rgba(col,.14+B.total*.33);pCtx.lineWidth=(.6+B.total*2)*(0.5+Math.random()*.7);pCtx.lineCap='round';
+    const cpx=cx+Math.cos(angle+.4)*len*.5,cpy=cy+Math.sin(angle+.4)*len*.4;
+    pCtx.beginPath();pCtx.moveTo(cx,cy);pCtx.quadraticCurveTo(cpx,cpy,cx+Math.cos(angle)*len,cy+Math.sin(angle)*len*.7);pCtx.stroke();
+  }
+  const gr=pCtx.createRadialGradient(cx,cy,0,cx,cy,radius*.36);
+  gr.addColorStop(0,rgba(col,.42+B.total*.32));gr.addColorStop(1,rgba(col,0));
+  pCtx.fillStyle=gr;pCtx.beginPath();pCtx.arc(cx,cy,radius*.36,0,Math.PI*2);pCtx.fill();
+  pCtx.save();pCtx.translate(cx,cy);pCtx.scale(1.3,.5);
+  pCtx.strokeStyle=rgba(col,.09+B.total*.16);pCtx.lineWidth=1.2+B.total*2.5;
+  pCtx.beginPath();pCtx.arc(0,0,radius*.85,0,Math.PI*2);pCtx.stroke();pCtx.restore();
+  resetBlend();
+}
 
+// ── Main render ──────────────────────────
+function renderFrame(data){
+  const len=analyser.frequencyBinCount,B=analyzeBands(data,len),now=Date.now();
+  const isBeat=B.total>prevEnergy*1.32&&B.total>.048&&(now-lastBeatT)>200;
+  if(isBeat)lastBeatT=now;
+  prevEnergy=B.total*.78+prevEnergy*.22;
+  const cx=currentX();maxContentX=Math.max(maxContentX,cx+80);
+  if(cx>CW-400)extendCanvas();
+  viewport.scrollLeft=Math.max(0,cx-viewport.clientWidth*.72);
+  if(cx>=CW)return;
+  // ambient thread
+  if(B.total>.012){
+    const ty=CH*.5+B.mid*52*Math.sin(cx*.011),tc=pitchToRGB(.4+B.mid*.2);
+    pCtx.globalCompositeOperation='screen';
+    pCtx.fillStyle=rgba(tc,.08+B.total*.11);
+    pCtx.beginPath();pCtx.arc(cx,ty,1.2+B.total*3.2,0,Math.PI*2);pCtx.fill();
+    resetBlend();
+  }
+  if((cx-lastDrawX)>=DRAW_INTERVAL||isBeat){
+    lastDrawX=cx;
+    if(B.subBass>.04||B.bass>.05)drawCloud(cx,B);
+    if(B.lowMid>.04||B.mid>.038)drawPetal(cx,B);
+    if(B.mid>.05||B.upperMid>.04)drawRibbon(cx,B);
+    if(B.high>.022||B.upperMid>.025)drawSparks(cx,B);
+    if(isBeat)drawBloom(cx,B);
+  }
   frameCount++;
 }
 
-// ── Emotion ────────────────────────────────────────────────
-function updateEmotion(energy, valence){
-  const q = energy<.07 ? (valence>1 ?'high_calm':'low_calm')
-           : energy<.17 ? (valence>1.2?'high_calm':'low_calm')
-           : (valence>.85?'high_tense':'low_tense');
-  emotionHistory.push(q);
-  if(emotionHistory.length>40) emotionHistory.shift();
-  const counts={};
-  emotionHistory.forEach(x=>counts[x]=(counts[x]||0)+1);
-  const dom=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
-  if(!currentEmotion || frameCount%150===0){
-    const words=EMOTIONS[dom];
-    currentEmotion=words[Math.floor(Math.random()*words.length)];
-    document.getElementById('emotion-word').textContent=currentEmotion;
-    document.getElementById('canvas-label').classList.add('visible');
-  }
-}
-
-// ── Anim loop ──────────────────────────────────────────────
+// ── Anim loop ───────────────────────────
 function animLoop(){
-  if(!isRunning) return;
+  if(!isRunning)return;
   const data=new Uint8Array(analyser.frequencyBinCount);
   analyser.getByteFrequencyData(data);
   renderFrame(data);
+  let ct=0,dur=0;
+  if(isAudioBuffer){
+    ct=audioCtx.currentTime-startTime+pauseOffset;
+    dur=audioDuration;
+    if(ct>=dur-0.05){onEnded();return;}
+  }
+  else if(audioEl&&!isNaN(audioEl.duration)){ct=audioEl.currentTime;dur=audioEl.duration;}
+  else if(isMicMode&&micStartTime){ct=(Date.now()-micStartTime)/1000;}
+  if(dur>0){document.getElementById('progress-fill').style.width=(ct/dur*100)+'%';document.getElementById('time-display').textContent=fmt(ct)+' / '+fmt(dur);}
   animId=requestAnimationFrame(animLoop);
 }
+function fmt(s){return Math.floor(s/60)+':'+(Math.floor(s%60)+'').padStart(2,'0');}
+function onEnded(){isRunning=false;cancelAnimationFrame(animId);setPlayState(false);setStatusByKey('statusComplete');}
 
-// ── File input ─────────────────────────────────────────────
-function triggerFileInput(){
-  // Reset so same file can be re-selected
-  document.getElementById('file-input').value='';
-  document.getElementById('file-input').click();
-}
-
-document.getElementById('file-input').addEventListener('change', async function(){
-  const file = this.files[0];
-  if(!file) return;
-
-  // Tear everything down first
-  stopAll();
-  clearCanvas();
-  document.getElementById('upload-overlay').classList.add('hidden');
-  setStatus('Loading — '+file.name);
-
-  // Always create a fresh AudioContext to avoid "source already connected" errors
-  try { if(audioCtx) await audioCtx.close(); } catch(e){}
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 4096;
-  analyser.smoothingTimeConstant = 0.83;
-
-  audioEl = new Audio(URL.createObjectURL(file));
-  audioEl.crossOrigin = 'anonymous';
-
-  source = audioCtx.createMediaElementSource(audioEl);
-  source.connect(analyser);
-  analyser.connect(audioCtx.destination);
-
-  audioEl.addEventListener('timeupdate', () => {
-    if(!audioEl.duration) return;
-    const pct = audioEl.currentTime / audioEl.duration * 100;
-    document.getElementById('progress-fill').style.width = pct+'%';
-    const m=Math.floor(audioEl.currentTime/60);
-    const s=Math.floor(audioEl.currentTime%60).toString().padStart(2,'0');
-    document.getElementById('canvas-time').textContent = m+':'+s;
-  });
-
-  audioEl.addEventListener('ended', () => {
-    isRunning=false; cancelAnimationFrame(animId);
-    setPlayState(false);
-    setStatus('Complete — your emotional painting is ready to save');
-  });
-
-  // Enable play button
-  const pb = document.getElementById('play-btn');
-  pb.disabled = false;
-  timelineCursor = 0;
-
-  // Auto-play
-  await audioCtx.resume();
-  audioEl.play();
-  isRunning=true; animLoop();
-  setPlayState(true);
-  setStatus('Painting — '+file.name);
-});
-
-// ── Play / Pause ───────────────────────────────────────────
+// ── Playback ────────────────────────────
 function togglePlay(){
-  if(!audioEl) return;
-  if(audioEl.paused){
-    audioCtx.resume().then(()=>{ audioEl.play(); });
-    isRunning=true; animLoop();
-    setPlayState(true);
-    setStatus('Painting…');
-  } else {
-    audioEl.pause();
-    isRunning=false; cancelAnimationFrame(animId);
-    setPlayState(false);
-    setStatus('Paused — painting preserved');
+  if(isAudioBuffer){
+    if(isRunning){
+      pauseOffset+=audioCtx.currentTime-startTime;
+      if(bufferSource){bufferSource.onended=null;try{bufferSource.stop();}catch(e){}bufferSource=null;}
+      isRunning=false;cancelAnimationFrame(animId);setPlayState(false);setStatusByKey('statusPaused');
+    }else{
+      // 强交互激活：用户主动手势触发时必须强制激活/恢复 AudioContext
+      audioCtx.resume().then(()=>{
+        createAndStartBufferSource(pauseOffset);
+        isRunning=true;
+        animLoop();
+        setPlayState(true);
+        setStatusByKey('statusPainting');
+      });
+    }
+  }else if(audioEl){
+    if(audioEl.paused){
+      audioCtx.resume().then(()=>{
+        audioEl.play();
+        isRunning=true;
+        animLoop();
+        setPlayState(true);
+        setStatusByKey('statusPainting');
+      });
+    }else{
+      audioEl.pause();isRunning=false;cancelAnimationFrame(animId);setPlayState(false);setStatusByKey('statusPaused');
+    }
   }
 }
-
-function setPlayState(playing){
-  const icon  = document.getElementById('play-icon');
-  const label = document.getElementById('play-label');
-  if(playing){
-    icon.innerHTML  = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-    label.textContent = 'Pause';
-    document.getElementById('play-btn').classList.add('active');
-  } else {
-    icon.innerHTML  = '<polygon points="5,3 19,12 5,21"/>';
-    label.textContent = 'Play';
-    document.getElementById('play-btn').classList.remove('active');
-  }
+function setPlayState(on){
+  const icon=document.getElementById('play-icon'),lbl=document.getElementById('play-label');
+  if(on){icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';lbl.textContent=i18n[currentLang].btnPause;document.getElementById('play-btn').classList.add('active');}
+  else{icon.innerHTML='<polygon points="5,3 19,12 5,21"/>';lbl.textContent=i18n[currentLang].btnPlay;document.getElementById('play-btn').classList.remove('active');}
 }
 
-// ── Seek (click on progress bar) ───────────────────────────
-function seekAudio(e){
-  if(!audioEl || !audioEl.duration) return;
-  const bar = document.getElementById('progress-bar');
-  const pct = e.offsetX / bar.offsetWidth;
-  audioEl.currentTime = pct * audioEl.duration;
-  // Update timeline cursor immediately
-  timelineCursor = pct;
-}
-
-// ── Microphone ─────────────────────────────────────────────
+// ── Mic ─────────────────────────────────
 async function toggleMic(){
-  if(isMicMode){
-    stopAll();
-    document.getElementById('mic-btn').classList.remove('active');
-    setStatus('Microphone off');
-    return;
-  }
+  if(isMicMode){stopAll();document.getElementById('mic-btn').classList.remove('active');setStatusByKey('statusMicOff');return;}
   try{
-    micStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
-    try { if(audioCtx) await audioCtx.close(); } catch(e){}
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize=4096; analyser.smoothingTimeConstant=0.83;
-    source = audioCtx.createMediaStreamSource(micStream);
-    source.connect(analyser);
-    isMicMode=true; isRunning=true;
-    micStartTime=Date.now(); timelineCursor=0;
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    initAudioContext();if(audioCtx.state==='suspended')await audioCtx.resume();
+    if(source){try{source.disconnect();}catch(e){}}
+    source=audioCtx.createMediaStreamSource(micStream);
+    source.connect(analyser); // 麦克风输入绝不接入 speakers 以绝后患（无啸叫）
+    isMicMode=true;isRunning=true;micStartTime=Date.now();
+    initCanvas();clearCanvas();
     document.getElementById('mic-btn').classList.add('active');
     document.getElementById('upload-overlay').classList.add('hidden');
     document.getElementById('play-btn').disabled=true;
-    setStatus('Listening via microphone — painting your sound…');
-    animLoop();
-  } catch(e){
-    setStatus('Microphone access denied — check browser permissions');
+    setStatusByKey('statusMicOn');animLoop();
+  }catch(e){setStatusByKey('statusMicDenied');}
+}
+
+// ── Stop / Clear ────────────────────────
+function stopAll(){
+  isRunning=false;isMicMode=false;isAudioBuffer=false;cancelAnimationFrame(animId);
+  if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+  if(bufferSource){bufferSource.onended=null;try{bufferSource.stop();}catch(e){}bufferSource=null;}
+  const vEl=document.getElementById('video-el');
+  if(audioEl&&audioEl!==vEl){try{audioEl.pause();}catch(e){}}
+  if(isVideoMode){try{vEl.pause();}catch(e){}}
+  if(source){try{source.disconnect();}catch(e){}source=null;}
+  audioEl=null;audioBuffer=null;isVideoMode=false;pauseOffset=0;audioDuration=0;
+  document.getElementById('play-btn').disabled=true;
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('time-display').textContent='0:00 / 0:00';
+  setPlayState(false);frameCount=0;prevEnergy=0;lastBeatT=0;lastDrawX=0;maxContentX=0;
+}
+function clearAll(){
+  stopAll();
+  document.getElementById('video-panel').classList.remove('visible');
+  const vEl=document.getElementById('video-el');vEl.pause();vEl.removeAttribute('src');vEl.load();
+  CW=MIN_CW;applyCanvasSize();clearCanvas();
+  document.getElementById('upload-overlay').classList.remove('hidden');
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('time-display').textContent='0:00 / 0:00';
+  viewport.scrollLeft=0;setStatusByKey('statusReady');
+}
+
+// ── Save ────────────────────────────────
+function saveCanvas(){
+  const dpr=window.devicePixelRatio||1,w=Math.max(900,Math.ceil(maxContentX+80));
+  const tmp=document.createElement('canvas');tmp.width=w*dpr;tmp.height=paintCanvas.height;
+  const tc=tmp.getContext('2d');tc.fillStyle=STYLE_BG[currentStyle];tc.fillRect(0,0,tmp.width,tmp.height);
+  tc.drawImage(paintCanvas,0,0,w*dpr,paintCanvas.height,0,0,w*dpr,paintCanvas.height);
+  const a=document.createElement('a');a.download='onkyo_'+currentStyle+'_'+Date.now()+'.png';a.href=tmp.toDataURL('image/png');a.click();
+}
+
+// ── Style ───────────────────────────────
+function setStyle(el){
+  document.querySelectorAll('.style-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');currentStyle=el.dataset.style;
+  document.documentElement.style.setProperty('--canvas-bg',STYLE_BG[currentStyle]);
+  paintBg();
+}
+
+// ── Speed / Seek ─────────────────────────
+function updateSpeed(el){PX_PER_SEC=+el.value;document.getElementById('speed-val').textContent=el.value+' px/s';}
+function seekAudio(e){
+  if(isAudioBuffer&&audioDuration>0){
+    const bar=document.getElementById('progress-bar'),frac=Math.max(0,Math.min(1,e.offsetX/bar.offsetWidth));
+    pauseOffset=frac*audioDuration;
+    if(isRunning){if(bufferSource){bufferSource.onended=null;bufferSource.stop();}createAndStartBufferSource(pauseOffset);}
+  }else if(audioEl&&audioEl.duration){
+    const bar=document.getElementById('progress-bar');audioEl.currentTime=Math.max(0,Math.min(1,e.offsetX/bar.offsetWidth))*audioEl.duration;
   }
 }
 
-// ── Stop all ───────────────────────────────────────────────
-function stopAll(){
-  isRunning=false; isMicMode=false; cancelAnimationFrame(animId);
-  if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; }
-  if(audioEl){ audioEl.pause(); audioEl=null; }
-  source=null; analyser=null;
-  document.getElementById('play-btn').disabled=true;
-  document.getElementById('progress-fill').style.width='0%';
-  setPlayState(false);
-  emotionHistory=[]; frameCount=0; prevEnergy=0; hueWander=0; timelineCursor=0;
+// ── Buffer source ────────────────────────
+function createAndStartBufferSource(offset){
+  bufferSource=audioCtx.createBufferSource();
+  bufferSource.buffer=audioBuffer;
+  // 高保真纯净路由：将音频同时传输给 analyser(绘图) 与 audioCtx.destination(放音扬声器)
+  bufferSource.connect(analyser);
+  bufferSource.connect(audioCtx.destination);
+  bufferSource.start(0,offset);
+  startTime=audioCtx.currentTime;
+  bufferSource.onended=()=>{if(audioCtx.currentTime-startTime+pauseOffset>=audioDuration-.25)onEnded();};
 }
 
-// ── Clear canvas ───────────────────────────────────────────
-function clearCanvas(){
-  if(!W||!H){ resizeCanvases(); return; }
-  pCtx.clearRect(0,0,W,H);
-  gCtx.clearRect(0,0,W,H);
-  paintBg();
-  document.getElementById('canvas-label').classList.remove('visible');
-  emotionHistory=[]; frameCount=0; prevEnergy=0; hueWander=0;
-  timelineCursor=0; currentEmotion='';
+// ── File import ───────────────────────────
+function triggerFileInput(){document.getElementById('file-input').value='';document.getElementById('file-input').click();}
+document.getElementById('file-input').addEventListener('change',async function(){
+  const file=this.files[0];if(!file)return;
+  stopAll();document.getElementById('upload-overlay').classList.add('hidden');
+  setStatusByKey('statusLoading',file.name);
+  CW=MIN_CW;applyCanvasSize();clearCanvas();viewport.scrollLeft=0;lastDrawX=0;
+  isVideoMode=file.type.startsWith('video/');
+  const videoPanel=document.getElementById('video-panel'),vEl=document.getElementById('video-el');
+  initAudioContext();if(audioCtx.state==='suspended')await audioCtx.resume();
+  if(isVideoMode){
+    videoPanel.classList.add('visible');vEl.pause();vEl.removeAttribute('src');vEl.load();
+    vEl.src=URL.createObjectURL(file);
+    vEl.onloadedmetadata=()=>{
+      initCanvas(vEl.duration||180);clearCanvas();audioDuration=vEl.duration||180;
+      if(!videoSource)videoSource=audioCtx.createMediaElementSource(vEl);
+      if(source){try{source.disconnect();}catch(e){}}
+      source=videoSource;
+      source.connect(analyser);
+      source.connect(audioCtx.destination); // 播放音轨渲染入扬声器
+      audioEl=vEl;isAudioBuffer=false;document.getElementById('play-btn').disabled=false;
+      setPlayState(true);setStatusByKey('statusVideoPlaying',file.name);
+      vEl.play().then(()=>{isRunning=true;animLoop();}).catch(()=>{});
+    };
+    vEl.onended=onEnded;vEl.load();
+  }else{
+    videoPanel.classList.remove('visible');vEl.pause();vEl.removeAttribute('src');vEl.load();
+    setStatusByKey('statusDecoding',file.name);
+    let ab;try{ab=await file.arrayBuffer();}catch(e){setStatusByKey('statusReadFailed',e.message);return;}
+    let decoded;try{decoded=await audioCtx.decodeAudioData(ab);}catch(e){setStatusByKey('statusDecodeFailed',e.message);document.getElementById('upload-overlay').classList.remove('hidden');return;}
+    audioBuffer=decoded;audioDuration=audioBuffer.duration;pauseOffset=0;isAudioBuffer=true;isVideoMode=false;
+    initCanvas(audioDuration);clearCanvas();
+    
+    // 强制保证 AudioContext 彻底处于 Active 状态以发声
+    if(audioCtx.state==='suspended')await audioCtx.resume();
+    
+    createAndStartBufferSource(0);isRunning=true;
+    document.getElementById('play-btn').disabled=false;setPlayState(true);
+    setStatusByKey('statusMusicPlaying',file.name);animLoop();
+  }
+});
+
+// ══════════════════════════════════════════
+//  PIANO PORTRAIT MODE — opens new tab
+//  Unified design language, same nav, same
+//  color tokens, same button styles
+// ══════════════════════════════════════════
+function openPianoMode(){
+  const html=getPianoHTML(currentLang);
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  window.open(URL.createObjectURL(blob),'_blank');
 }
 
-// ── Save ───────────────────────────────────────────────────
-function saveCanvas(){
-  const dpr=window.devicePixelRatio||1;
-  const out=document.createElement('canvas');
-  out.width=W*dpr; out.height=H*dpr;
-  const oc=out.getContext('2d');
-  oc.drawImage(paintCanvas,0,0);
-  oc.drawImage(glowCanvas,0,0);
-  const a=document.createElement('a');
-  a.download='onkyo_'+currentStyle+'_'+Date.now()+'.png';
-  a.href=out.toDataURL('image/png');
-  a.click();
+function getPianoHTML(initLang){
+return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>音響 Onkyo — Piano Portrait Mode</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--washi:#F7F6F2;--sumi:#1A1A1A;--moss:#8B9D77;--indigo:#6B8CAE;--mist:#E8E6DF;--ash:#9A9790;--canvas-bg:#03020E;--pa:#6B42CC}
+body{font-family:'Inter','Noto Serif SC',sans-serif;background:var(--washi);color:var(--sumi);min-height:100vh;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:60px;background:rgba(247,246,242,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--mist)}
+.nav-logo{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:1.3rem;font-weight:300;letter-spacing:.18em;color:var(--sumi);text-decoration:none}
+.nav-logo span{font-style:italic;color:var(--pa)}
+.nav-badge{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--pa);font-weight:500;padding:.14rem .48rem;border:1px solid rgba(107,66,204,.3)}
+.nav-back{font-size:.66rem;letter-spacing:.14em;color:var(--ash);cursor:pointer;border:1px solid var(--mist);padding:.28rem .7rem;background:transparent;font-family:'Inter',sans-serif;transition:all .13s}
+.nav-back:hover{border-color:var(--ash);color:var(--sumi);background:var(--mist)}
+.lang-selector{display:flex;align-items:center;gap:3px;background:var(--mist);padding:2px;border-radius:3px}
+.lang-btn{background:transparent;border:none;color:var(--ash);font-size:.62rem;padding:.2rem .4rem;cursor:pointer;font-family:'Inter','Noto Serif SC',sans-serif;transition:all .15s;border-radius:2px}
+.lang-btn:hover{color:var(--sumi)}
+.lang-btn.active{background:var(--washi);color:var(--sumi);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hero{padding-top:60px;display:flex;flex-direction:column}
+.hero-text{padding:3.5rem 3rem 1.8rem;max-width:560px}
+.eyebrow{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--pa);font-weight:500;margin-bottom:1rem}
+.hero-title{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:300;line-height:1.3;color:var(--sumi);margin-bottom:1rem}
+.hero-title em{font-style:italic;color:var(--pa)}
+.hero-sub{font-size:.83rem;line-height:1.82;color:var(--ash);font-weight:300;max-width:420px}
+.studio{display:flex;flex-direction:column;padding:0 3rem 4rem;gap:.75rem}
+.controls-row{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem}
+.btn{display:inline-flex;align-items:center;gap:.38rem;padding:.45rem .88rem;font-family:'Inter',sans-serif;font-size:.71rem;font-weight:400;letter-spacing:.06em;border:1px solid var(--mist);background:var(--washi);color:var(--sumi);cursor:pointer;transition:all .13s;outline:none;white-space:nowrap}
+.btn:hover{background:var(--mist);border-color:var(--ash)}
+.btn.active{background:var(--sumi);color:var(--washi);border-color:var(--sumi)}
+.btn.primary{background:var(--sumi);color:var(--washi);border-color:var(--sumi)}
+.btn.primary:hover{opacity:.78}
+.btn.accent{background:var(--pa);color:#fff;border-color:var(--pa)}
+.btn.accent:hover{opacity:.82}
+.btn svg{width:12px;height:12px;flex-shrink:0}
+.btn:disabled{opacity:.28;cursor:not-allowed}
+.divider{width:1px;height:21px;background:var(--mist);flex-shrink:0}
+.mode-group{display:flex;align-items:center;gap:.45rem;margin-left:auto;flex-wrap:wrap}
+.mode-label{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+.mode-pills{display:flex;gap:2px}
+.mode-pill{padding:.3rem .65rem;font-size:.67rem;border:1px solid var(--mist);background:transparent;color:var(--ash);cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif;letter-spacing:.05em}
+.mode-pill:hover{color:var(--sumi);border-color:var(--ash)}
+.mode-pill.active{background:var(--pa);color:#fff;border-color:var(--pa)}
+.canvas-viewport{position:relative;height:320px;overflow-x:auto;overflow-y:hidden;background:#03020E;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent;border:1px solid var(--mist)}
+.canvas-viewport::-webkit-scrollbar{height:3px}
+.canvas-viewport::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.canvas-track{position:relative;height:100%;min-width:100%}
+#pianoCanvas{position:absolute;top:0;left:0;display:block}
+.upload-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.3rem;cursor:pointer;z-index:20;transition:opacity .22s;background:rgba(0,0,0,.62);backdrop-filter:blur(4px)}
+.upload-overlay.hidden{opacity:0;pointer-events:none}
+.upload-circle{width:56px;height:56px;border:1px solid rgba(107,66,204,.28);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.18s}
+.upload-overlay:hover .upload-circle{border-color:rgba(107,66,204,.6)}
+.upload-circle svg{width:18px;height:18px;stroke:rgba(107,66,204,.7)}
+.upload-text{text-align:center;color:rgba(255,255,255,.5);font-size:.71rem;letter-spacing:.09em;font-weight:300;line-height:2}
+.upload-text strong{color:rgba(255,255,255,.82);font-weight:400}
+.chord-overlay{position:absolute;bottom:1rem;right:1.2rem;z-index:8;pointer-events:none;text-align:right;opacity:0;transition:opacity .5s}
+.chord-overlay.show{opacity:1}
+.chord-name{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:1.2rem;font-weight:300;font-style:italic;color:rgba(255,255,255,.5);letter-spacing:.08em}
+.chord-type{font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:.1rem}
+.progress-wrap{display:flex;align-items:center;gap:.7rem}
+.progress-bar{flex:1;height:1px;background:var(--mist);position:relative;cursor:pointer;overflow:hidden}
+.progress-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,var(--pa),#a580f0);transition:width .08s linear}
+.time-display{font-size:.63rem;color:var(--ash);font-weight:300;white-space:nowrap;min-width:68px;text-align:right}
+.status-row{display:flex;align-items:center;gap:.45rem}
+.status-text{font-size:.65rem;letter-spacing:.08em;color:var(--ash);font-weight:300}
+.speed-row{display:flex;align-items:center;gap:.65rem}
+.speed-label{font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);white-space:nowrap}
+.speed-slider{flex:1;-webkit-appearance:none;height:1px;background:var(--mist);outline:none;cursor:pointer}
+.speed-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;background:var(--pa);border-radius:50%;cursor:pointer}
+.speed-slider::-moz-range-thumb{width:10px;height:10px;background:var(--pa);border-radius:50%;border:none;cursor:pointer}
+.speed-val{font-size:.61rem;color:var(--ash);min-width:40px;text-align:right;font-weight:300}
+.note-legend{display:flex;flex-wrap:wrap;gap:.45rem}
+.note-chip{display:flex;align-items:center;gap:.34rem;font-size:.67rem;color:var(--ash);background:var(--mist);padding:.26rem .62rem}
+.note-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.philosophy{padding:4rem 3rem;border-top:1px solid var(--mist);display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem}
+.phil-num{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:1.7rem;font-weight:300;font-style:italic;color:var(--mist);line-height:1;margin-bottom:.8rem}
+.phil-title{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sumi);font-weight:500;margin-bottom:.6rem}
+.phil-body{font-size:.79rem;line-height:1.87;color:var(--ash);font-weight:300}
+footer{padding:1.6rem 3rem;border-top:1px solid var(--mist);display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:.86rem;font-weight:300;letter-spacing:.2em;color:var(--ash)}
+.footer-note{font-size:.62rem;color:var(--mist)}
+@media(max-width:768px){nav,.hero-text,.studio,.philosophy,footer{padding-left:1.3rem;padding-right:1.3rem}.philosophy{grid-template-columns:1fr;gap:1.8rem}.mode-group{margin-left:0}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="#" class="nav-logo">音響 <span>Onkyo</span></a>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <div class="nav-badge" id="pp-nav-badge">Piano Portrait Mode</div>
+    <div class="lang-selector">
+      <button class="lang-btn" id="pp-lang-zh" onclick="pp_setLanguage('zh')">简</button>
+      <button class="lang-btn" id="pp-lang-en" onclick="pp_setLanguage('en')">EN</button>
+      <button class="lang-btn" id="pp-lang-ja" onclick="pp_setLanguage('ja')">日</button>
+    </div>
+  </div>
+  <button class="nav-back" id="pp-nav-back" onclick="window.close()">← Back</button>
+</nav>
+<main>
+<div class="hero">
+  <div class="hero-text">
+    <p class="eyebrow" id="pp-eyebrow">Piano Portrait Mode</p>
+    <h1 class="hero-title" id="pp-title">将钢琴每个音符<br>化为<em>发光丝带。</em></h1>
+    <p class="hero-sub" id="pp-sub">专为钢琴曲设计。检测 88 键音符并映射颜色：C=深蓝 · D=青 · E=绿 · F=金 · G=橙 · A=红 · B=紫。和弦绽放为花朵，延音凝为云海，完整还原旋律的情感轨迹。</p>
+  </div>
+  <div class="studio">
+    <div class="controls-row">
+      <button class="btn accent" onclick="pp_triggerFile()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span id="pp-btn-import">导入钢琴曲</span>
+      </button>
+      <input type="file" id="pp-file" accept="audio/*" style="display:none">
+      <button class="btn" id="pp-play-btn" onclick="pp_togglePlay()" disabled>
+        <svg id="pp-play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
+        <span id="pp-play-label">播放</span>
+      </button>
+      <button class="btn" id="pp-mic-btn" onclick="pp_toggleMic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+        <span id="pp-btn-mic">麦克风</span>
+      </button>
+      <div class="divider"></div>
+      <button class="btn" onclick="pp_clearAll()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg><span id="pp-btn-reset">重置</span></button>
+      <button class="btn primary" onclick="pp_save()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="pp-btn-export">导出 PNG</span></button>
+      <div class="mode-group">
+        <span class="mode-label" id="pp-mode-label">显示模式</span>
+        <div class="mode-pills">
+          <button class="mode-pill active" id="pp-pill-ribbon" data-mode="ribbon" onclick="pp_setMode(this)">丝带</button>
+          <button class="mode-pill" id="pp-pill-waterfall" data-mode="waterfall" onclick="pp_setMode(this)">瀑布</button>
+          <button class="mode-pill" id="pp-pill-bloom" data-mode="bloom" onclick="pp_setMode(this)">花朵</button>
+        </div>
+      </div>
+    </div>
+    <div class="speed-row">
+      <span class="speed-label" id="pp-flow-label">流速</span>
+      <input type="range" class="speed-slider" id="pp-speed" min="15" max="120" value="38" step="5" oninput="pp_updateSpeed(this)">
+      <span class="speed-val" id="pp-speed-val">38 px/s</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="pp-progress-bar" onclick="pp_seek(event)"><div class="progress-fill" id="pp-progress-fill"></div></div>
+      <div class="time-display" id="pp-time">0:00 / 0:00</div>
+    </div>
+    <div class="canvas-viewport" id="pp-viewport">
+      <div class="canvas-track" id="pp-track">
+        <canvas id="pianoCanvas"></canvas>
+        <div class="chord-overlay" id="chord-overlay">
+          <div class="chord-name" id="chord-name"></div>
+          <div class="chord-type" id="chord-type"></div>
+        </div>
+        <div class="upload-overlay" id="pp-overlay" onclick="pp_triggerFile()">
+          <div class="upload-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke="rgba(107,66,204,.7)"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <div class="upload-text" id="pp-upload-text"><strong>导入钢琴曲 (mp3 / wav / flac)</strong><br>推荐: River Flows in You · Experience · Comptine<br><span style="opacity:.5">或点击麦克风现场弹奏</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="status-row"><span class="status-text" id="pp-status">就绪 — 请导入钢琴曲，或使用麦克风现场弹奏</span></div>
+    <div class="note-legend">
+      <div class="note-chip"><div class="note-dot" style="background:#1A3A9B"></div><span id="pp-key-1">C — 深蓝 · 庄重</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:#1A9BB5"></div><span id="pp-key-2">D — 青 · 清澈</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:#27AE60"></div><span id="pp-key-3">E — 绿 · 希望</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:#D4A017"></div><span id="pp-key-4">F — 金 · 温暖</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:#E8832A"></div><span id="pp-key-5">G — 橙 · 热情</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:#C0392B"></div><span id="pp-key-6">A — 红 · 激情</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:#7B2D8E"></div><span id="pp-key-7">B — Purple · 神秘</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:linear-gradient(90deg,#4a7ed9,#c060e0)"></div><span id="pp-key-8">和弦 — 花朵绽放</span></div>
+      <div class="note-chip"><div class="note-dot" style="background:linear-gradient(90deg,#3355c4,rgba(60,60,160,.3))"></div><span id="pp-key-9">延音 — 云海消散</span></div>
+    </div>
+  </div>
+</div>
+<section class="philosophy">
+  <div><div class="phil-num">一</div><div class="phil-title" id="pp-phil-t1">88键音符识别</div><p class="phil-body" id="pp-phil-b1">通过高精度频域分析检测 A0–C8 的完整钢琴音域。每个音符对应专属颜色的发光丝带，音高越高颜色越暖，构成连续流动的旋律轨迹。</p></div>
+  <div><div class="phil-num">二</div><div class="phil-title" id="pp-phil-t2">和弦与延音系统</div><p class="phil-body" id="pp-phil-b2">多个音符同时响起时识别和弦并触发花朵绽放效果。钢琴自然衰减由延音粒子模拟，每个音符在消散前漂浮 3–8 秒，还原踏板效果。</p></div>
+  <div><div class="phil-num">三</div><div class="phil-title" id="pp-phil-t3">旋律情感地图</div><p class="phil-body" id="pp-phil-b3">从左到右，整幅作品是完整的旋律情感时间轴。每首钢琴曲都会生成独一无二的画幅。推荐将导出的 PNG 作为专属音乐海报收藏。</p></div>
+</section>
+</main>
+<footer>
+  <span class="footer-logo">音響 / Piano Portrait</span>
+  <span class="footer-note" id="pp-footer-note">本地处理，数据不上传</span>
+</footer>
+<script>
+var PP_PX=38,PP_CH=320,PP_MIN=900,PP_EXT=1800;
+var pp_ctx=null,pp_an=null,pp_src=null;
+var pp_mic=null,pp_abuf=null,pp_bsrc=null;
+var pp_rid=null,pp_run=false,pp_micMode=false,pp_isBuf=false;
+var pp_st=0,pp_off=0,pp_dur=0;
+var pp_frame=0,pp_pe=0,pp_lb=0;
+var pp_CW=PP_MIN,pp_lx=0,pp_mx=0;
+var pp_mode='ribbon',pp_ms=null;
+var pp_sustain=[];
+
+var ppvp=document.getElementById('pp-viewport');
+var pptr=document.getElementById('pp-track');
+var ppc=document.getElementById('pianoCanvas');
+var pptrackCtx=ppc.getContext('2d');
+
+var NOTE_COL={C:[26,58,155],D:[26,155,181],E:[39,174,96],F:[212,160,23],G:[232,131,42],A:[192,57,43],B:[123,45,142]};
+var CHORD_COL={major:[212,160,23],minor:[26,58,155]};
+
+// ── i18n Dictionary for Piano Portrait Mode ──────────────────────
+var pp_currentLang = 'zh';
+var pp_statusKey = 'statusReady';
+var pp_statusExtra = '';
+
+var pp_i18n = {
+  zh: {
+    navBadge: "Piano Portrait Mode",
+    navBack: "← 返回主页",
+    heroEyebrow: "Piano Portrait Mode",
+    heroTitle: "将键盘的每个音符<br>化为<em>发光丝带。</em>",
+    heroSub: "专为钢琴曲打造的纯净视觉页面。高精度捕捉 88 键音符并映射色彩：C=庄重深蓝、D=清澈天青、E=生机翠绿、F=温暖柔金、G=琥珀耀橙、A=炽烈红焰、B=神秘幽紫。和弦在画布中瞬间盛放，延音如雾散聚，重现黑白键上的情感画幅。",
+    btnImport: "导入钢琴曲",
+    btnPlay: "播放",
+    btnPause: "暂停",
+    btnMic: "麦克风",
+    btnReset: "重置画布",
+    btnExport: "导出 PNG",
+    modeLabel: "显示模式",
+    modeRibbon: "发光丝带",
+    modeWaterfall: "星光瀑布",
+    modeBloom: "繁花盛放",
+    flowLabel: "流速",
+    uploadText: "<strong>导入钢琴曲 (mp3 / wav / flac)</strong><br>推荐聆听: 《River Flows in You》 · 《Experience》 · 《Comptine》<br><span style='opacity:.5'>亦可点击麦克风，开启现场指尖演奏</span>",
+    statusReady: "静候聆听 — 请导入钢琴曲，或开启麦克风捕捉现场琴音",
+    statusDecoding: "正在解析琴音律动 — ",
+    statusMusicPlaying: "正在演奏情绪光影 — ",
+    statusPaused: "已暂停演奏",
+    statusComplete: "肖像染织完成 — 专属钢琴画卷已就绪，可保存收藏",
+    statusMicOff: "麦克风捕获已关闭",
+    statusMicOn: "正在实时捕捉指尖弹奏 — 请开始演奏钢琴…",
+    statusMicDenied: "无法获取麦克风权限 — 请检查浏览器安全设置",
+    statusReadFailed: "文件读取失败: ",
+    statusDecodeFailed: "音频解码失败 (请检查文件是否损坏或格式是否支持): ",
+    philTitle1: "88键琴音映射",
+    philBody1: "采用高精度时频分析技术，完美覆盖 A0–C8 钢琴音域。每个弹奏下的音符对应其独特色相的发光丝带，并随音高自然形成连续流转的音律軌迹。",
+    philTitle2: "和弦共鸣与延音残响",
+    philBody2: "多声部同时奏响将触发多色彩和弦共鸣，绚丽盛放如名贵花卉。独创的延音物理模拟粒子系统，完美展现钢琴踏板下泛音在消逝前轻盈浮动的绝美空间感。",
+    philTitle3: "指尖染织的时间轴",
+    philBody3: "自左向右横卷延展，整幅作品便是一整首乐章的心流轨迹。每一曲钢琴协奏都会染织出举世无双的华美卷轴，为您封存专属于此刻的音乐记忆。",
+    footerNote: "本地安全解析，无任何数据上传，完美守护个人创作隐私。",
+    keys: [
+      "C — 庄重深蓝",
+      "D — 清澈天青",
+      "E — 希望生机翠绿",
+      "F — 温暖柔金",
+      "G — 热情琥珀",
+      "A — 激情炽红",
+      "B — 神秘幽紫",
+      "和弦 — 繁花盛盛放",
+      "延音 — 散落残响消散"
+    ]
+  },
+  en: {
+    navBadge: "Piano Portrait Mode",
+    navBack: "← Back",
+    heroEyebrow: "Piano Portrait Mode",
+    heroTitle: "Transforming every key<br>into a <em>luminous ribbon.</em>",
+    heroSub: "A visual sanctuary dedicated to the piano. Capturing the full 88-key range with profound clarity and mapping notes to an artistic palette: C=Deep Cobalt, D=Sky Cyan, E=Emerald, F=Warm Gold, G=Amber, A=Crimson, B=Amethyst. Chords bloom into vibrant flowers, while sustained tones dissolve as tranquil cloudscapes.",
+    btnImport: "Import Composition",
+    btnPlay: "Play",
+    btnPause: "Pause",
+    btnMic: "Microphone",
+    btnReset: "Reset Canvas",
+    btnExport: "Save PNG",
+    modeLabel: "Visual Mode",
+    modeRibbon: "Ribbon",
+    modeWaterfall: "Waterfall",
+    modeBloom: "Flora",
+    flowLabel: "Flow Speed",
+    uploadText: "<strong>Import piano audio (mp3 / wav / flac)</strong><br>Recommended: River Flows in You · Experience · Comptine<br><span style='opacity:.5'>Or use Microphone to play live</span>",
+    statusReady: "Ready — Import a piano track or use Microphone to play live",
+    statusDecoding: "Decoding piano frequencies — ",
+    statusMusicPlaying: "Performing — painting emotional currents: ",
+    statusPaused: "Paused",
+    statusComplete: "Portrait weave complete — your piano canvas is ready to save",
+    statusMicOff: "Microphone disabled",
+    statusMicOn: "Capturing real-time audio — please start playing the piano...",
+    statusMicDenied: "Microphone access denied — please check browser settings",
+    statusReadFailed: "Read failed: ",
+    statusDecodeFailed: "Audio decoding failed (unsupported format or corrupted file?): ",
+    philTitle1: "88-Key Spectrum Capture",
+    philBody1: "Applying high-resolution time-frequency tracking to detect the full A0–C8 acoustic range of a grand piano. Every individual note translates to its own glowing signature ribbon, charting your melodic trajectory.",
+    philTitle2: "Chords Resonance & Sustain Spark",
+    philBody2: "Simultaneous notes trigger intricate harmonic floral arrays. Natural decay is simulated by trailing particles, floating beautifully before fading, mirroring the damper pedal's romantic depth.",
+    philTitle3: "Woven Chronology of Touch",
+    philBody3: "Unrolling from left to right, your canvas maps the physical and emotional time-axis of a whole masterpiece. Every performance produces a distinct digital tapestry, suitable to print as a music poster.",
+    footerNote: "All sound processing is fully sandboxed on your local device. Private and secure.",
+    keys: [
+      "C — Cobalt · Solemn",
+      "D — Cyan · Pure",
+      "E — Emerald · Hope",
+      "F — Gold · Warm",
+      "G — Amber · Radiant",
+      "A — Crimson · Passion",
+      "B — Amethyst · Mystic",
+      "Chord — Floral Bloom",
+      "Sustain — Echo Drift"
+    ]
+  },
+  styleLabel: {}, // empty placeholders to prevent error
+  ja: {
+    navBadge: "Piano Portrait Mode",
+    navBack: "← 戻る",
+    heroEyebrow: "Piano Portrait Mode",
+    heroTitle: "鍵盤から零れる一音一音を<br><em>光り輝くリボン</em>へと昇華させる。",
+    heroSub: "ピアノ曲のためだけに設えられた静謐なビジュアルの聖堂。88鍵の周波数を高精度に捉え、固有の色へと変調します：C=深藍、D=天青、E=翠緑、F=暖金、G=琥珀、A=赤、B=紫。和音は瞬時に咲き誇る花となり、ペダルの残響は消えゆく雲海となって、旋律の旅路を静かに記録します。",
+    btnImport: "ピアノ曲を読み込む",
+    btnPlay: "再生",
+    btnPause: "一時停止",
+    btnMic: "マイク入力",
+    btnReset: "キャンバスをリセット",
+    btnExport: "PNGを書き出す",
+    modeLabel: "描画モード",
+    modeRibbon: "流線リボン",
+    modeWaterfall: "光の滝",
+    modeBloom: "花弁",
+    flowLabel: "流速",
+    uploadText: "<strong>ピアノ曲を読み込む (mp3 / wav / flac)</strong><br>おすすめ: River Flows in You · Experience · Comptine<br><span style='opacity:.5'>またはマイクを有効にして、リアルタイム演奏を行う</span>",
+    statusReady: "静寂 — ピアノ曲を読み込むか、マイクを有効にしてください",
+    statusDecoding: "旋律の余韻を解析中 — ",
+    statusMusicPlaying: "美しく奏でています — ",
+    statusPaused: "演奏を一時停止中",
+    statusComplete: "肖像が紡ぎ出されました — 保存して持ち帰ることができます",
+    statusMicOff: "マイク入力が無効になりました",
+    statusMicOn: "マイク入力をリアルタイム測定中 — ピアノの演奏を始めてください...",
+    statusMicDenied: "マイクへのアクセスが拒否されました — 権限設定を確認してください",
+    statusReadFailed: "ファイルの読み込みに失敗しました: ",
+    statusDecodeFailed: "デコードに失敗しました (未対応の形式または破損ファイルの可能性があります): ",
+    philTitle1: "88鍵周波数のフルマッピング",
+    philBody1: "高精度な周波数ドメイン解析技術により、A0–C8 のグランドピアノの全音域を検出。紡がれた音符は固有の光の軌跡リボンとして、優雅で詩的に空間を流れてゆきます。",
+    philTitle2: "和音共鳴とペダルの残響",
+    philBody2: "複数音の同時演奏時には和音共鳴花弁が優美に咲き誇ります。ピアノのダンパーペダルによる自然な残響減衰を浮遊する粒子システムでシミュレートし、消えゆく余韻を美しく捉えます。",
+    philTitle3: "指先で紡ぐ時の織物",
+    philBody3: "左から右へ流れる時間軸に沿って、一曲全体の音の旅路を記録します。どの曲も二度と同じものはないあなただけの絵巻になります。お部屋に飾るポスターとしてもおすすめの一品です。",
+    footerNote: "ローカル処理のみ。ファイルや音声データが外部に送信される心配はありません。",
+    keys: [
+      "C — 深藍 · 厳か",
+      "D — 天青 · 清らか",
+      "E — 翠緑 · 希望",
+      "F — 暖金 · 温もり",
+      "G — 琥珀 · 情熱",
+      "A — 赤 · 激情",
+      "B — 紫 · 神秘",
+      "和音 — 咲き誇る百花",
+      "余韻 — 消えゆく雲海"
+    ]
+  }
+};
+
+function pp_setStatusByKey(key,extra){
+  extra=extra||'';
+  pp_statusKey=key; pp_statusExtra=extra;
+  var el=document.getElementById('pp-status');
+  if(el) {
+    var str = pp_i18n[pp_currentLang][key] || key;
+    el.textContent=str+extra;
+  }
 }
 
-// ── Style ──────────────────────────────────────────────────
-function setStyle(el){
-  document.querySelectorAll('.style-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  currentStyle=el.dataset.style;
-  clearCanvas();
+function pp_setLanguage(lang){
+  if(!pp_i18n[lang])return;
+  pp_currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  var activeBtn = document.getElementById('pp-lang-'+lang);
+  if(activeBtn) activeBtn.classList.add('active');
+  
+  var t=pp_i18n[lang];
+  document.getElementById('pp-nav-badge').textContent=t.navBadge;
+  document.getElementById('pp-nav-back').textContent=t.navBack;
+  document.getElementById('pp-eyebrow').textContent=t.heroEyebrow;
+  document.getElementById('pp-title').innerHTML=t.heroTitle;
+  document.getElementById('pp-sub').textContent=t.heroSub;
+  document.getElementById('pp-btn-import').textContent=t.btnImport;
+  document.getElementById('pp-btn-mic').textContent=t.btnMic;
+  document.getElementById('pp-btn-reset').textContent=t.btnReset;
+  document.getElementById('pp-btn-export').textContent=t.btnExport;
+  document.getElementById('pp-mode-label').textContent=t.modeLabel;
+  document.getElementById('pp-flow-label').textContent=t.flowLabel;
+  document.getElementById('pp-pill-ribbon').textContent=t.modeRibbon;
+  document.getElementById('pp-pill-waterfall').textContent=t.modeWaterfall;
+  document.getElementById('pp-pill-bloom').textContent=t.modeBloom;
+  document.getElementById('pp-upload-text').innerHTML=t.uploadText;
+  document.getElementById('pp-phil-t1').textContent=t.philTitle1;
+  document.getElementById('pp-phil-b1').textContent=t.philBody1;
+  document.getElementById('pp-phil-t2').textContent=t.philTitle2;
+  document.getElementById('pp-phil-b2').textContent=t.philBody2;
+  document.getElementById('pp-phil-t3').textContent=t.philTitle3;
+  document.getElementById('pp-phil-b3').textContent=t.philBody3;
+  document.getElementById('pp-footer-note').textContent=t.footerNote;
+  
+  document.getElementById('pp-play-label').textContent=pp_run?t.btnPause:t.btnPlay;
+  
+  t.keys.forEach((k,i)=>{
+    const el=document.getElementById('pp-key-'+(i+1));
+    if(el) el.textContent=k;
+  });
+  
+  pp_setStatusByKey(pp_statusKey,pp_statusExtra);
 }
 
-function setStatus(msg){
-  document.getElementById('status-text').textContent=msg;
+function pp_applySize(dpr){
+  dpr=dpr||(window.devicePixelRatio||1);
+  if (pp_CW * dpr > 8192) {
+    dpr = Math.min(dpr, 8192 / pp_CW);
+  }
+  ppc.width=pp_CW*dpr;ppc.height=PP_CH*dpr;ppc.style.width=pp_CW+'px';ppc.style.height=PP_CH+'px';
+  pptr.style.width=pp_CW+'px';pptrackCtx.setTransform(dpr,0,0,dpr,0,0);
+}
+function pp_clr(){pptrackCtx.fillStyle='#03020E';pptrackCtx.fillRect(0,0,pp_CW,PP_CH);}
+function pp_ext(){
+  var dpr=window.devicePixelRatio||1,tmp=document.createElement('canvas');
+  tmp.width=ppc.width;tmp.height=ppc.height;tmp.getContext('2d').drawImage(ppc,0,0);
+  var old=pp_CW;pp_CW+=PP_EXT;pp_applySize(dpr);
+  pptrackCtx.drawImage(tmp,0,0,tmp.width/dpr,tmp.height/dpr);
+  pptrackCtx.fillStyle='#03020E';pptrackCtx.fillRect(old,0,PP_EXT,PP_CH);
+}
+function pp_initCtx(){
+  if(!pp_ctx)pp_ctx=new(window.AudioContext||window.webkitAudioContext)();
+  if(!pp_an){pp_an=pp_ctx.createAnalyser();pp_an.fftSize=8192;pp_an.smoothingTimeConstant=0.72;}
 }
 
-// ── Init ───────────────────────────────────────────────────
-resizeCanvases();
+function freqToNote(freq){
+  if(freq<27||freq>4200)return null;
+  var n=Math.round(12*Math.log2(freq/440)+49);
+  if(n<1||n>88)return null;
+  var names=['A','Bb','B','C','Db','D','Eb','E','F','Gb','G','Ab'];
+  var raw=names[(n-1)%12];
+  var natural={'A':'A','B':'B','C':'C','D':'D','E':'E','F':'F','G':'G'};
+  var base=raw.length===1?raw:raw[0];
+  var oct=Math.floor((n+8)/12);
+  return{name:base,n:n,freq:freq,oct:oct};
+}
+
+function pp_detectNotes(data,len,sr){
+  var nyq=sr/2,peaks=[];
+  for(var i=2;i<len-2;i++){
+    if(data[i]>data[i-1]&&data[i]>data[i+1]&&data[i]>38){
+      var freq=(i/len)*nyq,nt=freqToNote(freq);
+      if(nt){
+        var ex=peaks.findIndex(function(p){return p.name===nt.name;});
+        if(ex>=0){if(data[i]>peaks[ex].amp)peaks.splice(ex,1);else continue;}
+        peaks.push({name:nt.name,freq:freq,amp:data[i]/255,oct:nt.oct});
+      }
+    }
+  }
+  return peaks.sort(function(a,b){return b.amp-a.amp;}).slice(0,6);
+}
+
+function detectChord(notes){
+  if(notes.length<2)return null;
+  var ns=notes.map(function(n){return n.name;});
+  if(ns.includes('C')&&ns.includes('E')&&ns.includes('G'))return{name:'C Major',type:'major',col:CHORD_COL.major};
+  if(ns.includes('A')&&ns.includes('C')&&ns.includes('E'))return{name:'A Minor',type:'minor',col:CHORD_COL.minor};
+  if(ns.includes('G')&&ns.includes('B')&&ns.includes('D'))return{name:'G Major',type:'major',col:CHORD_COL.major};
+  if(ns.includes('F')&&ns.includes('A')&&ns.includes('C'))return{name:'F Major',type:'major',col:CHORD_COL.major};
+  if(ns.includes('D')&&ns.includes('F')&&ns.includes('A'))return{name:'D Minor',type:'minor',col:CHORD_COL.minor};
+  if(ns.includes('E')&&ns.includes('G')&&ns.includes('B'))return{name:'E Minor',type:'minor',col:CHORD_COL.minor};
+  var t=ns.includes('A')||ns.includes('E')?'minor':'major';
+  return{name:ns.slice(0,2).join(''),type:t,col:CHORD_COL[t]};
+}
+
+function ppRgba(col,a){return'rgba('+col[0]+','+col[1]+','+col[2]+','+Math.min(1,Math.max(0,a))+')';}
+
+function drawRibbon(cx,note){
+  var col=NOTE_COL[note.name]||[150,150,150],amp=note.amp;
+  var py=PP_CH*(0.85-(note.oct/9)*0.70)+(Math.random()-.5)*12;
+  pptrackCtx.globalCompositeOperation='screen';
+  
+  var len=50+amp*180;
+  var bend1=(Math.random()-.5)*PP_CH*0.15;
+  var bend2=(Math.random()-.5)*PP_CH*0.15;
+  
+  pptrackCtx.strokeStyle=ppRgba(col,0.02+amp*0.12);
+  pptrackCtx.lineWidth=0.8+amp*2.2;
+  pptrackCtx.lineCap='round';
+  pptrackCtx.lineJoin='round';
+  pptrackCtx.beginPath();
+  pptrackCtx.moveTo(cx-len,py);
+  pptrackCtx.bezierCurveTo(cx-len/2,py+bend1,cx+len/2,py+bend2,cx+len,py+(Math.random()-.5)*6);
+  pptrackCtx.stroke();
+  
+  pptrackCtx.strokeStyle=ppRgba([Math.min(255,col[0]+60),Math.min(255,col[1]+60),Math.min(255,col[2]+60)],0.06+amp*0.10);
+  pptrackCtx.lineWidth=0.3+amp*0.6;
+  pptrackCtx.beginPath();
+  pptrackCtx.moveTo(cx-len*.7,py);
+  pptrackCtx.bezierCurveTo(cx-len/3,py+bend1*.6,cx+len/3,py+bend2*.6,cx+len*.7,py);
+  pptrackCtx.stroke();
+  
+  var gr=pptrackCtx.createRadialGradient(cx,py,0,cx,py,15+amp*30);
+  gr.addColorStop(0,ppRgba(col,0.05+amp*0.06));
+  gr.addColorStop(.4,ppRgba(col,0.01+amp*0.02));
+  gr.addColorStop(1,'rgba(0,0,0,0)');
+  
+  pptrackCtx.fillStyle=gr;
+  pptrackCtx.beginPath();
+  pptrackCtx.arc(cx,py,15+amp*30,0,Math.PI*2);
+  pptrackCtx.fill();
+  
+  if(amp>.15)pp_sustain.push({x:cx,y:py,col:col,life:1,vx:(Math.random()-.5)*.3,vy:-(0.1+Math.random()*.3),r:1.0+amp*2.0});
+  pptrackCtx.globalCompositeOperation='source-over';
+}
+
+function drawWaterfall(cx,note){
+  var col=NOTE_COL[note.name]||[150,150,150],amp=note.amp;
+  var py=PP_CH*(0.82-(note.oct/8)*0.62),bh=4+amp*28;
+  pptrackCtx.globalCompositeOperation='screen';
+  var gr=pptrackCtx.createLinearGradient(cx,py-bh,cx,py+bh);
+  
+  gr.addColorStop(0,ppRgba(col,0));
+  gr.addColorStop(.4,ppRgba(col,0.08+amp*0.15));
+  gr.addColorStop(1,ppRgba(col,0));
+  
+  pptrackCtx.fillStyle=gr;
+  pptrackCtx.fillRect(cx-1-amp,py-bh,2+amp*2,bh*2);
+  pptrackCtx.globalCompositeOperation='source-over';
+}
+
+function drawBloom(cx,note){
+  var col=NOTE_COL[note.name]||[150,150,150],amp=note.amp;
+  var py=PP_CH*(0.82-(note.oct/8)*0.62),r=8+amp*28,np=4+Math.ceil(amp*7);
+  pptrackCtx.globalCompositeOperation='screen';
+  for(var i=0;i<np;i++){
+    var angle=(i/np)*Math.PI*2,pr=r*(.5+Math.random()*.6);
+    
+    pptrackCtx.strokeStyle=ppRgba(col,0.04+amp*0.10);
+    pptrackCtx.lineWidth=0.4+amp*0.8;
+    pptrackCtx.lineCap='round';
+    pptrackCtx.beginPath();
+    pptrackCtx.moveTo(cx,py);
+    pptrackCtx.quadraticCurveTo(cx+Math.cos(angle+.5)*pr*.55,py+Math.sin(angle+.5)*pr*.55,cx+Math.cos(angle)*pr,py+Math.sin(angle)*pr*.7);
+    pptrackCtx.stroke();
+  }
+  var gr=pptrackCtx.createRadialGradient(cx,py,0,cx,py,r*.35);
+  gr.addColorStop(0,ppRgba(col,0.12+amp*0.12));
+  gr.addColorStop(1,ppRgba(col,0));
+  pptrackCtx.fillStyle=gr;
+  pptrackCtx.beginPath();
+  pptrackCtx.arc(cx,py,r*.35,0,Math.PI*2);
+  pptrackCtx.fill();
+  pptrackCtx.globalCompositeOperation='source-over';
+}
+
+function drawChordFlower(cx,chord,e){
+  var col=chord.col,cy=PP_CH*(0.28+Math.random()*.42),r=18+e*52;
+  pptrackCtx.globalCompositeOperation='screen';
+  for(var i=0;i<8;i++){
+    var angle=(i/8)*Math.PI*2,pr=r*(.5+Math.random()*.5);
+    
+    pptrackCtx.strokeStyle=ppRgba(col,0.04+e*.08);
+    pptrackCtx.lineWidth=0.6+e*1.2;
+    pptrackCtx.lineCap='round';
+    pptrackCtx.beginPath();
+    pptrackCtx.moveTo(cx,cy);
+    pptrackCtx.quadraticCurveTo(cx+Math.cos(angle+.6)*pr*.5,cy+Math.sin(angle+.6)*pr*.5,cx+Math.cos(angle)*pr,cy+Math.sin(angle)*pr*.7);
+    pptrackCtx.stroke();
+  }
+  var gr=pptrackCtx.createRadialGradient(cx,cy,0,cx,cy,r*.36);
+  gr.addColorStop(0,ppRgba(col,0.12+e*.12));
+  gr.addColorStop(1,ppRgba(col,0));
+  pptrackCtx.fillStyle=gr;
+  pptrackCtx.beginPath();
+  pptrackCtx.arc(cx,cy,r*.36,0,Math.PI*2);
+  pptrackCtx.fill();
+  pptrackCtx.globalCompositeOperation='source-over';
+  
+  var co=document.getElementById('chord-overlay');
+  document.getElementById('chord-name').textContent=chord.name;
+  document.getElementById('chord-type').textContent=chord.type.toUpperCase();
+  co.classList.add('show');clearTimeout(co._t);co._t=setTimeout(function(){co.classList.remove('show');},2000);
+}
+
+function pp_drawSustain(){
+  pptrackCtx.globalCompositeOperation='screen';
+  pp_sustain=pp_sustain.filter(function(p){
+    p.life-=0.006;if(p.life<=0)return false;
+    p.x+=p.vx;p.y+=p.vy;
+    var gr=pptrackCtx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+    gr.addColorStop(0,ppRgba(p.col,p.life*.18));gr.addColorStop(1,ppRgba(p.col,0));
+    pptrackCtx.fillStyle=gr;
+    pptrackCtx.beginPath();
+    pptrackCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    pptrackCtx.fill();
+    return true;
+  });
+  pptrackCtx.globalCompositeOperation='source-over';
+}
+
+function pp_render(data){
+  var len=pp_an.frequencyBinCount,sr=pp_ctx.sampleRate;
+  var tot=0;for(var i=0;i<len;i++)tot+=data[i];tot=(tot/len)/255;
+  var now=Date.now(),beat=tot>pp_pe*1.28&&tot>.045&&(now-pp_lb)>180;
+  if(beat)pp_lb=now;pp_pe=tot*.78+pp_pe*.22;
+  var cx=pp_currX();pp_mx=Math.max(pp_mx,cx+80);
+  if(cx>pp_CW-400)pp_ext();
+  ppvp.scrollLeft=Math.max(0,cx-ppvp.clientWidth*.72);
+  if(cx>=pp_CW)return;
+  
+  if ((cx - pp_lx) >= 5 || beat) {
+    pp_lx = cx;
+    var notes=pp_detectNotes(data,len,sr);
+    var chord=notes.length>=3?detectChord(notes):null;
+    notes.forEach(function(n){
+      if(n.amp>0.07){
+        if(pp_mode==='ribbon')drawRibbon(cx,n);
+        else if(pp_mode==='waterfall')drawWaterfall(cx,n);
+        else drawBloom(cx,n);
+      }
+    });
+    if(chord&&tot>0.07)drawChordFlower(cx,chord,tot);
+    else if(beat&&tot>0.10&&notes.length>0)drawChordFlower(cx,{name:'',type:'',col:NOTE_COL[notes[0].name]||[180,120,220]},tot);
+  }
+  
+  if(pp_frame%2===0)pp_drawSustain();
+  if(tot>.006&&pp_detectNotes(data,len,sr).length===0){pptrackCtx.globalCompositeOperation='screen';pptrackCtx.fillStyle='rgba(25,20,65,'+tot*.06+')';pptrackCtx.fillRect(cx-2,0,4,PP_CH);pptrackCtx.globalCompositeOperation='source-over';}
+  pp_frame++;
+}
+
+function pp_currX(){
+  if(pp_micMode&&pp_ms)return((Date.now()-pp_ms)/1000)*PP_PX;
+  var t=0;if(pp_isBuf)t=pp_run?(pp_ctx.currentTime-pp_st+pp_off):pp_off;return t*PP_PX;
+}
+
+// 确保主循环平稳运行
+function pp_loop(){
+  if(!pp_run)return;
+  var data=new Uint8Array(pp_an.frequencyBinCount);pp_an.getByteFrequencyData(data);pp_render(data);
+  var ct=0,dur=0;
+  if(pp_isBuf){
+    ct=pp_ctx.currentTime-pp_st+pp_off;
+    dur=pp_dur;
+    if(ct>=dur-0.05){pp_ended();return;}
+  }
+  if(dur>0){document.getElementById('pp-progress-fill').style.width=(ct/dur*100)+'%';document.getElementById('pp-time').textContent=ppFmt(ct)+' / '+ppFmt(dur);}
+  pp_rid=requestAnimationFrame(pp_loop);
+}
+function ppFmt(s){return Math.floor(s/60)+':'+(Math.floor(s%60)+'').padStart(2,'0');}
+function pp_ended(){pp_run=false;cancelAnimationFrame(pp_rid);pp_setPlay(false);document.getElementById('pp-status').textContent='绘制完成 — 可导出 PNG';}
+
+function pp_setPlay(on){
+  var icon=document.getElementById('pp-play-icon'),lbl=document.getElementById('pp-play-label');
+  if(on){icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';lbl.textContent='暂停';document.getElementById('pp-play-btn').classList.add('active');}
+  else{icon.innerHTML='<polygon points="5,3 19,12 5,21"/>';lbl.textContent='播放';document.getElementById('pp-play-btn').classList.remove('active');}
+}
+function pp_togglePlay(){
+  if(pp_isBuf){
+    if(pp_run){
+      pp_off+=pp_ctx.currentTime-pp_st;
+      if(pp_bsrc){pp_bsrc.onended=null;try{pp_bsrc.stop();}catch(e){}pp_bsrc=null;}
+      pp_run=false;cancelAnimationFrame(pp_rid);pp_setPlay(false);
+      document.getElementById('pp-status').textContent='已暂停';
+    }else{
+      pp_ctx.resume().then(function(){
+        pp_startBuf(pp_off);
+        pp_run=true;
+        pp_loop();
+        pp_setPlay(true);
+        pp_setStatusByKey('statusMusicPlaying');
+      });
+    }
+  }
+}
+async function pp_toggleMic(){
+  if(pp_micMode){pp_stopAll();document.getElementById('pp-mic-btn').classList.remove('active');pp_setStatusByKey('statusMicOff');return;}
+  try{
+    pp_mic=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    pp_initCtx();if(pp_ctx.state==='suspended')await pp_ctx.resume();
+    if(pp_src){try{pp_src.disconnect();}catch(e){}}
+    pp_src=pp_ctx.createMediaStreamSource(pp_mic);
+    pp_src.connect(pp_an);
+    pp_micMode=true;pp_run=true;pp_ms=Date.now();pp_CW=PP_MIN;pp_applySize();pp_clr();pp_sustain=[];
+    document.getElementById('pp-mic-btn').classList.add('active');document.getElementById('pp-overlay').classList.add('hidden');
+    document.getElementById('pp-play-btn').disabled=true;
+    pp_setStatusByKey('statusMicOn');pp_loop();
+  }catch(e){pp_setStatusByKey('statusMicDenied');}
+}
+function pp_stopAll(){
+  pp_run=false;pp_micMode=false;pp_isBuf=false;cancelAnimationFrame(pp_rid);
+  if(pp_mic){pp_mic.getTracks().forEach(function(t){t.stop();});pp_mic=null;}
+  if(pp_bsrc){pp_bsrc.onended=null;try{pp_bsrc.stop();}catch(e){}pp_bsrc=null;}
+  if(pp_src){try{pp_src.disconnect();}catch(e){}pp_src=null;}
+  pp_abuf=null;pp_off=0;pp_dur=0;pp_run=false;
+  document.getElementById('pp-play-btn').disabled=true;
+  document.getElementById('pp-progress-fill').style.width='0%';document.getElementById('pp-time').textContent='0:00 / 0:00';
+  pp_setPlay(false);pp_frame=0;pp_pe=0;pp_lb=0;pp_lx=0;pp_mx=0;pp_sustain=[];
+}
+function pp_clearAll(){
+  pp_stopAll();pp_CW=PP_MIN;pp_applySize();pp_clr();pp_sustain=[];
+  document.getElementById('pp-overlay').classList.remove('hidden');
+  document.getElementById('pp-progress-fill').style.width='0%';document.getElementById('pp-time').textContent='0:00 / 0:00';
+  ppvp.scrollLeft=0;pp_setStatusByKey('statusReady');
+}
+function pp_save(){
+  var dpr=window.devicePixelRatio||1,w=Math.max(PP_MIN,Math.ceil(pp_mx+80));
+  var tmp=document.createElement('canvas');tmp.width=w*dpr;tmp.height=ppc.height;
+  var tc=tmp.getContext('2d');tc.fillStyle='#03020E';tc.fillRect(0,0,tmp.width,tmp.height);
+  tc.drawImage(ppc,0,0,w*dpr,ppc.height,0,0,w*dpr,ppc.height);
+  var a=document.createElement('a');a.download='onkyo_piano_'+Date.now()+'.png';a.href=tmp.toDataURL('image/png');a.click();
+}
+function pp_setMode(el){document.querySelectorAll('.mode-pill').forEach(function(p){p.classList.remove('active');});el.classList.add('active');pp_mode=el.dataset.mode;}
+function pp_updateSpeed(el){PP_PX=+el.value;document.getElementById('pp-speed-val').textContent=el.value+' px/s';}
+function pp_seek(e){
+  if(pp_isBuf&&pp_dur>0){var bar=document.getElementById('pp-progress-bar');pp_off=Math.max(0,Math.min(1,e.offsetX/bar.offsetWidth))*pp_dur;if(pp_run){if(pp_bsrc){pp_bsrc.onended=null;pp_bsrc.stop();}pp_startBuf(pp_off);}}
+}
+function pp_startBuf(off){
+  pp_bsrc=pp_ctx.createBufferSource();
+  pp_bsrc.buffer=pp_abuf;
+  pp_bsrc.connect(pp_an);
+  pp_bsrc.connect(pp_ctx.destination);
+  pp_bsrc.start(0,off);
+  pp_st=pp_ctx.currentTime;
+  pp_bsrc.onended=function(){if(pp_ctx.currentTime-pp_st+pp_off>=pp_dur-.25)pp_ended();};
+}
+function pp_triggerFile(){document.getElementById('pp-file').value='';document.getElementById('pp-file').click();}
+document.getElementById('pp-file').addEventListener('change',async function(){
+  var file=this.files[0];if(!file)return;
+  pp_stopAll();document.getElementById('pp-overlay').classList.add('hidden');
+  pp_setStatusByKey('statusDecoding', file.name);
+  pp_CW=PP_MIN;pp_applySize();pp_clr();pp_sustain=[];ppvp.scrollLeft=0;
+  pp_initCtx();if(pp_ctx.state==='suspended')await pp_ctx.resume();
+  var ab;try{ab=await file.arrayBuffer();}catch(e){pp_setStatusByKey('statusReadFailed', e.message);return;}
+  var dec;try{dec=await pp_ctx.decodeAudioData(ab);}catch(e){pp_setStatusByKey('statusDecodeFailed', e.message);document.getElementById('pp-overlay').classList.remove('hidden');return;}
+  pp_abuf=dec;pp_dur=dec.duration;pp_off=0;pp_isBuf=true;
+  pp_CW=Math.max(PP_MIN,Math.ceil(dec.duration*PP_PX)+400);pp_applySize();pp_clr();
+  
+  if(pp_ctx.state==='suspended')await pp_ctx.resume();
+  
+  pp_startBuf(0);pp_run=true;document.getElementById('pp-play-btn').disabled=false;pp_setPlay(true);
+  pp_setStatusByKey('statusMusicPlaying', file.name);pp_loop();
+});
+window.addEventListener('DOMContentLoaded',function(){
+  requestAnimationFrame(function(){
+    pp_CW=PP_MIN;
+    pp_applySize();
+    pp_clr();
+    pp_setLanguage('${initLang}');
+  });
+});
+<\/script>
+</body>
+</html>`;
+}
+
+// ── Init ──────────────────────────────────
+window.addEventListener('DOMContentLoaded',function(){
+  requestAnimationFrame(function(){
+    CW=MIN_CW;applyCanvasSize();
+    document.documentElement.style.setProperty('--canvas-bg',STYLE_BG['emotion']);
+    setLanguage('zh');
+    clearCanvas();
+  });
+});
 </script>
 </body>
 </html>
